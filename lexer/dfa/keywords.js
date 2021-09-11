@@ -7,7 +7,7 @@ exports.keywords = {
             { "s": 4 },
             { "s": 5 },
         ],
-        TYPE: "KEY_WORD"
+        TYPE: "KEY_WORD_CLASS"
     },
 
     elseK: {
@@ -187,6 +187,27 @@ exports.keywords = {
             { "f": 2 },
         ],
         TYPE: "KEY_WORD"
+    },
+
+    returnK: {
+        DFA: [
+            { "r": 1 },
+            { "e": 2 },
+            { "t": 3 },
+            { "u": 4 },
+            { "r": 5 },
+            { "n": 6 },
+        ],
+        TYPE: "KEY_WORD_RETURN"
+    },
+
+    varK: {
+        DFA: [
+            { "v": 1 },
+            { "a": 2 },
+            { "r": 3 }
+        ],
+        TYPE: "KEY_WORD_VAR"
     },
 
 }

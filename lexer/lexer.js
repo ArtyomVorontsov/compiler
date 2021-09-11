@@ -31,6 +31,8 @@ const {
 } = bracketsAndOperators;
 
 const {
+    varK,
+    returnK,
     classK,
     elseK,
     booleanFalseK,
@@ -196,6 +198,8 @@ const commentHandler = (globalTokens) => {
 const lexer = (string) => {
     const tokens = [];
 
+    string = runner(varK, 3, string, tokens, fa);
+    string = runner(returnK, 6, string, tokens, fa);
     string = runner(letK, 3, string, tokens, fa);
     string = runner(ifK, 2, string, tokens, fa);
     string = runner(classK, 5, string, tokens, fa);
@@ -218,7 +222,7 @@ const lexer = (string) => {
 
 
     string = runner(newLine, 1, string, tokens, fa);
-    string = runner(comparison, 1, string, tokens, fa)
+    //string = runner(comparison, 1, string, tokens, fa)
     string = runner(commentDeclaration, 2, string, tokens, fa);
 
 

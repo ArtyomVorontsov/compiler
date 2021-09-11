@@ -17,14 +17,14 @@ exports.bracketsAndOperators = {
         DFA: [
             { "{": 1 }
         ],
-        TYPE: "BRACKETS"
+        TYPE: "OPEN_BRACE"
     },
 
     closeBracket: {
         DFA: [
             { "}": 1 }
         ],
-        TYPE: "BRACKETS"
+        TYPE: "CLOSE_BRACE"
     },
 
     multiply: {
@@ -55,18 +55,18 @@ exports.bracketsAndOperators = {
         TYPE: "MATH_OP_PLUS"
     },
 
-    comparison: {
-        DFA: [
-            { "=": 1 },
-        ],
-        TYPE: "MATH_OP_COMPARISON"
-    },
+    // comparison: {
+    //     DFA: [
+    //         { "=": 1 },
+    //     ],
+    //     TYPE: "MATH_OP_COMPARISON"
+    // },
 
     cols: {
         DFA: [
             { ";": 1 }
         ],
-        TYPE: "COLS"
+        TYPE: "SEMI_COLON"
     },
 
     quotes: {
@@ -138,10 +138,9 @@ exports.bracketsAndOperators = {
 
     assignment: {
         DFA: [
-            { "<": 1 },
-            { "-": 2 }
+            { "=": 1 },
         ],
-        TYPE: "ASSIGNMENT"
+        TYPE: "OPERATOR_ASSIGN"
     },
 
     dot: {
