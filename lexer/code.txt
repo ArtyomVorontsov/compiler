@@ -1,4 +1,4 @@
 class main {
-    var j = 30;
+    var lol = 50;
     return j;
 }
