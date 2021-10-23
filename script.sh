@@ -1,0 +1,1 @@
+node /Users/artjoms/Desktop/parser/lexer/lexer.js | node /Users/artjoms/Desktop/parser/parser/parser.js "/Users/artjoms/Desktop/parser/lexer/output.json" | node /Users/artjoms/Desktop/parser/typeChecker/typeChecker.js "/Users/artjoms/Desktop/parser/parser/output.json"

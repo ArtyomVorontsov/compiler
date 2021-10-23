@@ -63,7 +63,7 @@ const {
 let program = "";
 
 try {
-    const data = fs.readFileSync('./code.txt', 'utf8')
+    const data = fs.readFileSync('/Users/artjoms/Desktop/parser/lexer/code.txt', 'utf8')
     program = data;
 } catch (err) {
     console.error(err)
@@ -275,17 +275,24 @@ const lexer = (string) => {
     return { sortedTokens, string, gluedString };
 }
 
-const code = fs.readFileSync("./code.txt", 'utf8');
+const code = fs.readFileSync("/Users/artjoms/Desktop/parser/lexer/code.txt", 'utf8');
+//node /Users/artjoms/Desktop/parser/lexer/lexer.js | node /Users/artjoms/Desktop/parser/parser/parser.js "../lexer/output.json"
 
 const output = lexer(code);
 
 // Filtered output from SPACE and NEW_LINE lexems
+//const filteredOutput = {output: []};
 const filteredOutput = output.sortedTokens.filter((lexem) => {
-    if(lexem.TYPE !== "NEW_LINE" && lexem.TYPE !== "SPACE" ) {
+    if (lexem.TYPE !== "NEW_LINE" && lexem.TYPE !== "SPACE") {
         return lexem;
     }
 })
 
-fs.writeFile("output.js", util.inspect(filteredOutput, { maxArrayLength: 10000 }), ["UTF-8"], () => {
+// Write file.
+try {
+    fs.writeFileSync("/Users/artjoms/Desktop/parser/lexer/output.json", JSON.stringify(filteredOutput), ["UTF-8"])
     console.log("saved!")
-})
+} catch (error) {
+    console.error(error)
+}
+

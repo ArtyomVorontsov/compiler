@@ -1,250 +1,20 @@
-const st = [
-    {
-        "TYPE": "BODY",
-        "state": [
-            {
-                "TYPE": "CLASS_DECLARATION",
-                "state": [
-                    {
-                        "TYPE": "KEY_WORD_CLASS",
-                        "position": 0,
-                        "lexem": "class"
-                    },
-                    {
-                        "TYPE": "ID",
-                        "position": 6,
-                        "lexem": "main"
-                    },
-                    {
-                        "TYPE": "BODY",
-                        "state": [
-                            {
-                                "TYPE": "OPEN_BRACE",
-                                "position": 11,
-                                "lexem": "{"
-                            },
-                            {
-                                "TYPE": "VARIABLE_DECLARATION",
-                                "state": [
-                                    {
-                                        "TYPE": "KEY_WORD_VAR",
-                                        "position": 17,
-                                        "lexem": "var"
-                                    },
-                                    {
-                                        "TYPE": "ID",
-                                        "position": 21,
-                                        "lexem": "lol"
-                                    },
-                                    {
-                                        "TYPE": "OPERATOR_ASSIGN",
-                                        "position": 25,
-                                        "lexem": "="
-                                    },
-                                    {
-                                        "TYPE": "INT",
-                                        "position": 27,
-                                        "lexem": "50"
-                                    },
-                                    {
-                                        "TYPE": "SEMI_COLON",
-                                        "position": 29,
-                                        "lexem": ";"
-                                    },
-                                    {
-                                        "TYPE": "RETURN_STATEMENT",
-                                        "state": [
-                                            {
-                                                "TYPE": "KEY_WORD_RETURN",
-                                                "position": 35,
-                                                "lexem": "return"
-                                            },
-                                            {
-                                                "TYPE": "ID",
-                                                "position": 42,
-                                                "lexem": "lol"
-                                            },
-                                            {
-                                                "TYPE": "SEMI_COLON",
-                                                "position": 45,
-                                                "lexem": ";"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "TYPE": "CLASS_DECLARATION",
-                                "state": [
-                                    {
-                                        "TYPE": "KEY_WORD_CLASS",
-                                        "position": 52,
-                                        "lexem": "class"
-                                    },
-                                    {
-                                        "TYPE": "ID",
-                                        "position": 58,
-                                        "lexem": "hello"
-                                    },
-                                    {
-                                        "TYPE": "BODY",
-                                        "state": [
-                                            {
-                                                "TYPE": "OPEN_BRACE",
-                                                "position": 64,
-                                                "lexem": "{"
-                                            },
-                                            {
-                                                "TYPE": "VARIABLE_DECLARATION",
-                                                "state": [
-                                                    {
-                                                        "TYPE": "KEY_WORD_VAR",
-                                                        "position": 74,
-                                                        "lexem": "var"
-                                                    },
-                                                    {
-                                                        "TYPE": "ID",
-                                                        "position": 78,
-                                                        "lexem": "i"
-                                                    },
-                                                    {
-                                                        "TYPE": "OPERATOR_ASSIGN",
-                                                        "position": 80,
-                                                        "lexem": "="
-                                                    },
-                                                    {
-                                                        "TYPE": "INT",
-                                                        "position": 82,
-                                                        "lexem": "50"
-                                                    },
-                                                    {
-                                                        "TYPE": "SEMI_COLON",
-                                                        "position": 84,
-                                                        "lexem": ";"
-                                                    },
-                                                    {
-                                                        "TYPE": "RETURN_STATEMENT",
-                                                        "state": [
-                                                            {
-                                                                "TYPE": "KEY_WORD_RETURN",
-                                                                "position": 94,
-                                                                "lexem": "return"
-                                                            },
-                                                            {
-                                                                "TYPE": "ID",
-                                                                "position": 101,
-                                                                "lexem": "i"
-                                                            },
-                                                            {
-                                                                "TYPE": "SEMI_COLON",
-                                                                "position": 102,
-                                                                "lexem": ";"
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "TYPE": "CLOSE_BRACE",
-                                                "position": 108,
-                                                "lexem": "}"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "TYPE": "CLASS_DECLARATION",
-                                "state": [
-                                    {
-                                        "TYPE": "KEY_WORD_CLASS",
-                                        "position": 115,
-                                        "lexem": "class"
-                                    },
-                                    {
-                                        "TYPE": "ID",
-                                        "position": 121,
-                                        "lexem": "bue"
-                                    },
-                                    {
-                                        "TYPE": "BODY",
-                                        "state": [
-                                            {
-                                                "TYPE": "OPEN_BRACE",
-                                                "position": 125,
-                                                "lexem": "{"
-                                            },
-                                            {
-                                                "TYPE": "VARIABLE_DECLARATION",
-                                                "state": [
-                                                    {
-                                                        "TYPE": "KEY_WORD_VAR",
-                                                        "position": 135,
-                                                        "lexem": "var"
-                                                    },
-                                                    {
-                                                        "TYPE": "ID",
-                                                        "position": 139,
-                                                        "lexem": "abc"
-                                                    },
-                                                    {
-                                                        "TYPE": "OPERATOR_ASSIGN",
-                                                        "position": 143,
-                                                        "lexem": "="
-                                                    },
-                                                    {
-                                                        "TYPE": "INT",
-                                                        "position": 145,
-                                                        "lexem": "50"
-                                                    },
-                                                    {
-                                                        "TYPE": "SEMI_COLON",
-                                                        "position": 147,
-                                                        "lexem": ";"
-                                                    },
-                                                    {
-                                                        "TYPE": "RETURN_STATEMENT",
-                                                        "state": [
-                                                            {
-                                                                "TYPE": "KEY_WORD_RETURN",
-                                                                "position": 157,
-                                                                "lexem": "return"
-                                                            },
-                                                            {
-                                                                "TYPE": "ID",
-                                                                "position": 164,
-                                                                "lexem": "abc"
-                                                            },
-                                                            {
-                                                                "TYPE": "SEMI_COLON",
-                                                                "position": 167,
-                                                                "lexem": ";"
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "TYPE": "CLOSE_BRACE",
-                                                "position": 173,
-                                                "lexem": "}"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "TYPE": "CLOSE_BRACE",
-                                "position": 175,
-                                "lexem": "}"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-]
+const util = require('util');
+const fs = require('fs');
+const colors = require('colors');
+
+let st = []
+
+var myArgs = process.argv.slice(2);
+const parser_output_path = "/Users/artjoms/Desktop/parser/parser/output.json" // myArgs[0];
+
+try {
+    const data = fs.readFileSync(parser_output_path, 'utf8')
+    st = JSON.parse(data);
+} catch (err) {
+    console.error(err)
+}
+
+
 
 
 const SCOPES = [
@@ -252,6 +22,10 @@ const SCOPES = [
 ]
 
 const scopeChecker = (state) => {
+    const errors = [];
+
+    if(!state.length) errors.push("No state")
+
     state.forEach((TOKEN, index) => {
         if (TOKEN.TYPE === "BODY") {
             SCOPES.push({
@@ -268,7 +42,13 @@ const scopeChecker = (state) => {
             const error = `Variable already declared in this scope! Error position ${declared_variable.position}`
 
             scope_identifiers.forEach((identifier) => {
-                if (identifier.lexem === declared_variable.lexem) throw error
+                try {
+                    if (identifier.lexem === declared_variable.lexem) throw error
+                } catch (error) {
+                    console.error(error.black.bgRed);
+                    throw new Error(error);
+                }
+
             })
 
             scope_identifiers.push(declared_variable);
@@ -277,9 +57,17 @@ const scopeChecker = (state) => {
         if (TOKEN.state) {
             scopeChecker(TOKEN.state)
         }
+        return 
     })
 
+    const successMessage = "Semantic analysis proceed successfully.";
+    const errorMessage = "Semantic analysis failed";
+    const message = errors.length ? errorMessage.bgRed.black : successMessage.bgGreen.black;  
+
+    return message;
 }
 
-scopeChecker(st)
-console.log(SCOPES)
+const message = scopeChecker(st)
+
+
+console.log(message.bgGreen.black, "\n" + util.inspect(SCOPES, { showHidden: false, depth: null, colors: true }))

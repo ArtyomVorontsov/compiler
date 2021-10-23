@@ -1,44 +1,19 @@
 const fs = require('fs');
 const util = require('util');
 
-const tokens = [
-    { TYPE: 'KEY_WORD_CLASS', position: 0, lexem: 'class' },
-    { TYPE: 'ID', position: 6, lexem: 'main' },
-    { TYPE: 'OPEN_BRACE', position: 11, lexem: '{' },
-    { TYPE: 'KEY_WORD_VAR', position: 17, lexem: 'var' },
-    { TYPE: 'ID', position: 21, lexem: 'lol' },
-    { TYPE: 'OPERATOR_ASSIGN', position: 25, lexem: '=' },
-    { TYPE: 'INT', position: 27, lexem: '50' },
-    { TYPE: 'SEMI_COLON', position: 29, lexem: ';' },
-    { TYPE: 'KEY_WORD_RETURN', position: 35, lexem: 'return' },
-    { TYPE: 'ID', position: 42, lexem: 'lol' },
-    { TYPE: 'SEMI_COLON', position: 45, lexem: ';' },
-    { TYPE: 'KEY_WORD_CLASS', position: 52, lexem: 'class' },
-    { TYPE: 'ID', position: 58, lexem: 'hello' },
-    { TYPE: 'OPEN_BRACE', position: 64, lexem: '{' },
-    { TYPE: 'KEY_WORD_VAR', position: 74, lexem: 'var' },
-    { TYPE: 'ID', position: 78, lexem: 'i' },
-    { TYPE: 'OPERATOR_ASSIGN', position: 80, lexem: '=' },
-    { TYPE: 'INT', position: 82, lexem: '50' },
-    { TYPE: 'SEMI_COLON', position: 84, lexem: ';' },
-    { TYPE: 'KEY_WORD_RETURN', position: 94, lexem: 'return' },
-    { TYPE: 'ID', position: 101, lexem: 'i' },
-    { TYPE: 'SEMI_COLON', position: 102, lexem: ';' },
-    { TYPE: 'CLOSE_BRACE', position: 108, lexem: '}' },
-    { TYPE: 'KEY_WORD_CLASS', position: 115, lexem: 'class' },
-    { TYPE: 'ID', position: 121, lexem: 'bue' },
-    { TYPE: 'OPEN_BRACE', position: 125, lexem: '{' },
-    { TYPE: 'KEY_WORD_VAR', position: 135, lexem: 'var' },
-    { TYPE: 'ID', position: 139, lexem: 'abc' },
-    { TYPE: 'OPERATOR_ASSIGN', position: 143, lexem: '=' },
-    { TYPE: 'INT', position: 145, lexem: '50' },
-    { TYPE: 'SEMI_COLON', position: 147, lexem: ';' },
-    { TYPE: 'KEY_WORD_RETURN', position: 157, lexem: 'return' },
-    { TYPE: 'ID', position: 164, lexem: 'abc' },
-    { TYPE: 'SEMI_COLON', position: 167, lexem: ';' },
-    { TYPE: 'CLOSE_BRACE', position: 173, lexem: '}' },
-    { TYPE: 'CLOSE_BRACE', position: 175, lexem: '}' }
-  ]
+var myArgs = process.argv.slice(2);
+console.log('lexer_output_path: ', myArgs[0]);
+const lexer_output_path = myArgs[0];
+let tokens = []
+
+try {
+    const data = fs.readFileSync(lexer_output_path, 'utf8')
+    tokens = JSON.parse(data);
+} catch (err) {
+    console.error(err)
+}
+
+console.log(tokens)
 
 let next = -1;
 let state = false;
@@ -152,8 +127,7 @@ const VARIABLE_DECLARATION = (parentNode) => {
     const res = term("KEY_WORD_VAR", node.state) && term("ID", node.state) && 
     term("OPERATOR_ASSIGN", node.state) && 
     VALUE(node.state) && 
-    term("SEMI_COLON", node.state) && 
-    EXPRESSION(node.state)
+    term("SEMI_COLON", node.state);
     res && parentNode.push(node)
     return res
 }
@@ -204,6 +178,7 @@ program()
 
 const output = JSON.stringify(currentTerminals.reverse())
 console.log(output)
-fs.writeFile("output.json", util.inspect(output, { maxArrayLength: 10000 }), ["UTF-8"], () => {
+
+fs.writeFileSync("/Users/artjoms/Desktop/parser/parser/output.json",output, ["UTF-8"], () => {
     console.log("saved!")
 })
