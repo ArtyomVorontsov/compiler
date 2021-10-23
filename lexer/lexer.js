@@ -255,8 +255,6 @@ const lexer = (string) => {
     //error handling
     string = undeclaredSybmols(string, tokens);
 
-
-
     let sortedTokens = sorter(tokens);
 
     //comment handling
@@ -277,7 +275,17 @@ const lexer = (string) => {
     return { sortedTokens, string, gluedString };
 }
 
-const output = lexer(program);
-fs.writeFile("output.js", util.inspect(output.sortedTokens, { maxArrayLength: 10000 }), ["UTF-8"], () => {
+const code = fs.readFileSync("./code.txt", 'utf8');
+
+const output = lexer(code);
+
+// Filtered output from SPACE and NEW_LINE lexems
+const filteredOutput = output.sortedTokens.filter((lexem) => {
+    if(lexem.TYPE !== "NEW_LINE" && lexem.TYPE !== "SPACE" ) {
+        return lexem;
+    }
+})
+
+fs.writeFile("output.js", util.inspect(filteredOutput, { maxArrayLength: 10000 }), ["UTF-8"], () => {
     console.log("saved!")
 })
