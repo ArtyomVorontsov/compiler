@@ -42,7 +42,7 @@ const program = () => {
     }
 
     const node = {
-        TYPE: "BODY",
+        TYPE: "PROGRAM",
         state: [
 
         ]
@@ -109,6 +109,9 @@ const EXPRESSION = (node) => {
     else if (saveNext(() => CLASS_DECLARATION(node))) {
         return true
     } 
+    else if (saveNext(() => VARIABLE_ASSIGNEMENT(node))) {
+        return true
+    }
     else if (saveNext(() =>EPSILON(node))) {
         return true
     }
@@ -125,6 +128,22 @@ const VARIABLE_DECLARATION = (parentNode) => {
     }
 
     const res = term("KEY_WORD_VAR", node.state) && term("ID", node.state) && 
+    term("OPERATOR_ASSIGN", node.state) && 
+    VALUE(node.state) && 
+    term("SEMI_COLON", node.state);
+    res && parentNode.push(node)
+    return res
+}
+
+const VARIABLE_ASSIGNEMENT = (parentNode) => {
+    const node = {
+        TYPE: "VARIABLE_ASSIGNEMENT",
+        state: [
+
+        ]
+    }
+
+    const res = term("ID", node.state) && 
     term("OPERATOR_ASSIGN", node.state) && 
     VALUE(node.state) && 
     term("SEMI_COLON", node.state);

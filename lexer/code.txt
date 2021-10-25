@@ -1,16 +1,14 @@
 class main {
     var lol = 50;
     
-
     class hello {
         var i = 50;
         return i;
+    }
+
+    class hi {
+        var i = 0;
     }
 
     var bca = 12;
-
-    class hello {
-        var i = 50;
-        return i;
-    }
 }
