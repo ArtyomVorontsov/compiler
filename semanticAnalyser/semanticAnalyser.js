@@ -131,7 +131,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             // Register identifiers usage in scope
             node.state.forEach((terminal, index) => {
                 if (terminal.TYPE === "ID") {
-                    let TYPE_OF_EXPRESSION = node.state[index - 1];
+                    let TYPE_OF_EXPRESSION = node.state[index - 2];
 
                     if (!TYPE_OF_EXPRESSION) {
                         TYPE_OF_EXPRESSION = { TYPE: 'VARIABLE_ASSIGNEMENT', position: node.state[index].position, lexem: null }
@@ -142,7 +142,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
 
             // Register identifiers declaration in scope.
             if (node.TYPE === "VARIABLE_DECLARATION")
-                symbol_table.update_last_scope({declared_identifier: node.state[1]});
+                symbol_table.update_last_scope({declared_identifier: node.state[2]});
         }
     });
 

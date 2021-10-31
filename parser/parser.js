@@ -53,7 +53,7 @@ const program = () => {
         currentTerminals.push(node)
         return true
     }
-    
+
     return false
 }
 
@@ -105,14 +105,91 @@ const EXPRESSION = (node) => {
     }
     else if (saveNext(() => RETURN_STATEMENT(node))) {
         return true
-    } 
+    }
     else if (saveNext(() => CLASS_DECLARATION(node))) {
         return true
-    } 
+    }
     else if (saveNext(() => VARIABLE_ASSIGNEMENT(node))) {
         return true
     }
-    else if (saveNext(() =>EPSILON(node))) {
+    else if (saveNext(() => ARIFMETIC_OPERATION_STATEMENT(node))) {
+        return true
+    }
+    else if (saveNext(() => EPSILON(node))) {
+        return true
+    }
+
+    return false
+}
+
+const ARIFMETIC_OPERATION_STATEMENT = (node) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => ADDITION_EXPRESSION(node))) {
+        return true
+    } else if (saveNext(() => SUBSTRACTION_EXPRESSION(node))) {
+        return true
+    }
+
+    return false
+}
+
+const SUBSTRACTION_EXPRESSION = (parentNode) => {
+    const node = {
+        TYPE: "SUBSTRACTION_EXPRESSION",
+        state: [
+
+        ]
+    }
+
+    const res = term("KEY_WORD_VAR", node.state) &&
+        TYPE(node.state) &&
+        term("ID", node.state) &&
+        term("OPERATOR_ASSIGN", node.state) &&
+        term("ID", node.state) &&
+        term("MATH_OP_MINUS", node.state) &&
+        term("ID", node.state) &&
+        term("SEMI_COLON", node.state);
+    res && parentNode.push(node)
+    return res
+}
+
+const ADDITION_EXPRESSION = (parentNode) => {
+    const node = {
+        TYPE: "ADDITION_EXPRESSION",
+        state: [
+
+        ]
+    }
+
+    const res = term("KEY_WORD_VAR", node.state) &&
+        TYPE(node.state) &&
+        term("ID", node.state) &&
+        term("OPERATOR_ASSIGN", node.state) &&
+        term("ID", node.state) &&
+        term("MATH_OP_PLUS", node.state) &&
+        term("ID", node.state) &&
+        term("SEMI_COLON", node.state);
+    res && parentNode.push(node)
+    return res
+}
+
+const TYPE = (node) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => term("TYPE_INT", node))) {
         return true
     }
 
@@ -127,10 +204,12 @@ const VARIABLE_DECLARATION = (parentNode) => {
         ]
     }
 
-    const res = term("KEY_WORD_VAR", node.state) && term("ID", node.state) && 
-    term("OPERATOR_ASSIGN", node.state) && 
-    VALUE(node.state) && 
-    term("SEMI_COLON", node.state);
+    const res = term("KEY_WORD_VAR", node.state) &&
+        TYPE(node.state) &&
+        term("ID", node.state) &&
+        term("OPERATOR_ASSIGN", node.state) &&
+        VALUE(node.state) &&
+        term("SEMI_COLON", node.state);
     res && parentNode.push(node)
     return res
 }
@@ -143,10 +222,10 @@ const VARIABLE_ASSIGNEMENT = (parentNode) => {
         ]
     }
 
-    const res = term("ID", node.state) && 
-    term("OPERATOR_ASSIGN", node.state) && 
-    VALUE(node.state) && 
-    term("SEMI_COLON", node.state);
+    const res = term("ID", node.state) &&
+        term("OPERATOR_ASSIGN", node.state) &&
+        VALUE(node.state) &&
+        term("SEMI_COLON", node.state);
     res && parentNode.push(node)
     return res
 }
@@ -158,8 +237,8 @@ const RETURN_STATEMENT = (parentNode) => {
 
         ]
     }
-    const res = term("KEY_WORD_RETURN", node.state) && term("ID", node.state) && 
-    term("SEMI_COLON", node.state)
+    const res = term("KEY_WORD_RETURN", node.state) && term("ID", node.state) &&
+        term("SEMI_COLON", node.state)
     res && parentNode.push(node)
     return res
 }
@@ -198,6 +277,6 @@ program()
 const output = JSON.stringify(currentTerminals.reverse())
 console.log(output)
 
-fs.writeFileSync("/Users/artjoms/Desktop/parser/parser/output.json",output, ["UTF-8"], () => {
+fs.writeFileSync("/Users/artjoms/Desktop/parser/parser/output.json", output, ["UTF-8"], () => {
     console.log("saved!")
 })

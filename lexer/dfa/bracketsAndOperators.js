@@ -55,13 +55,6 @@ exports.bracketsAndOperators = {
         TYPE: "MATH_OP_PLUS"
     },
 
-    // comparison: {
-    //     DFA: [
-    //         { "=": 1 },
-    //     ],
-    //     TYPE: "MATH_OP_COMPARISON"
-    // },
-
     cols: {
         DFA: [
             { ";": 1 }
@@ -163,6 +156,5 @@ exports.bracketsAndOperators = {
         ],
         TYPE: "COMMA"
     },
-
     
 }

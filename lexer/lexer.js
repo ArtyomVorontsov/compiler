@@ -1,8 +1,13 @@
 const { bracketsAndOperators } = require("./dfa/bracketsAndOperators");
 const { keywords } = require("./dfa/keywords");
 const { stringsAndNumbers } = require("./dfa/stringsAndNumbers");
+const { types } = require("./dfa/types");
 const fs = require('fs');
 const util = require('util');
+
+const {
+    int
+} = types;
 
 const {
     openParentheses,
@@ -220,12 +225,10 @@ const lexer = (string) => {
     string = runner(notK, 3, string, tokens, fa);
     string = runner(ofK, 2, string, tokens, fa);
 
-
+    string = runner(int, 3, string, tokens, fa);
+    
     string = runner(newLine, 1, string, tokens, fa);
-    //string = runner(comparison, 1, string, tokens, fa)
     string = runner(commentDeclaration, 2, string, tokens, fa);
-
-
     string = runner(assignment, 1, string, tokens, fa);
     string = runner(column, 1, string, tokens, fa);
     string = runner(openParentheses, 1, string, tokens, fa);
@@ -246,7 +249,6 @@ const lexer = (string) => {
     string = runner(comma, 1, string, tokens, fa);
     string = runner(dot, 1, string, tokens, fa);
     string = runner(quotes, 1, string, tokens, fa);
-
     string = runner(number, 1, string, tokens, faId);
     string = runner(variableIdentifier, 1, string, tokens, faId);
     string = runner(space, 1, string, tokens, fa);
