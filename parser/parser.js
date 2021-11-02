@@ -28,9 +28,11 @@ const term = (token, termstate) => {
 
     console.log({ "NEXT": next }, { "CHECKING:": token }, { "CURRENT": tokens[next].TYPE }, token === tokens[next].TYPE);
     state = token === tokens[next].TYPE;
-    termstate.push(tokens[next]);
+    state && termstate.push(tokens[next]);
     return state;
 }
+
+// General nodes.
 
 const program = () => {
     let save = next;
@@ -57,19 +59,6 @@ const program = () => {
     return false
 }
 
-
-const CLASS_DECLARATION = (parentNode) => {
-    const node = {
-        TYPE: "CLASS_DECLARATION",
-        state: [
-
-        ]
-    }
-    const res = term("KEY_WORD_CLASS", node.state) && term("ID", node.state) && BODY(node.state)
-    res && parentNode.push(node)
-    return res
-}
-
 const MULTI_EXPRESSION = (state) => {
     const isValid = []
     do {
@@ -77,18 +66,6 @@ const MULTI_EXPRESSION = (state) => {
     } while (isValid[isValid.length - 1]);
 
     return isValid.includes(true);
-}
-
-const BODY = (parentNode) => {
-    const node = {
-        TYPE: "BODY",
-        state: [
-
-        ]
-    }
-    const res = term("OPEN_BRACE", node.state) && MULTI_EXPRESSION(node.state) && term("CLOSE_BRACE", node.state);
-    res && parentNode.push(node)
-    return res
 }
 
 const EXPRESSION = (node) => {
@@ -117,6 +94,73 @@ const EXPRESSION = (node) => {
     }
 
     return false
+}
+
+const VALUE = (parentNode) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => ARIFMETIC_OPERATION_STATEMENT(parentNode))) {
+        return true
+    }
+    else if (saveNext(() => term("STRING", parentNode))) {
+        return true
+    }  
+    else if (saveNext(() => term("INT", parentNode))) {
+        return true
+    } 
+
+    return false
+}
+
+const TYPE = (node) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => term("TYPE_STRING", node))) {
+        return true
+    } 
+    else if (saveNext(() => term("TYPE_INT", node))){
+        return true;
+    }
+
+    return false
+}
+
+// Specific nodes.
+
+const BODY = (parentNode) => {
+    const node = {
+        TYPE: "BODY",
+        state: [
+
+        ]
+    }
+    const res = term("OPEN_BRACE", node.state) && MULTI_EXPRESSION(node.state) && term("CLOSE_BRACE", node.state);
+    res && parentNode.push(node)
+    return res
+}
+
+const CLASS_DECLARATION = (parentNode) => {
+    const node = {
+        TYPE: "CLASS_DECLARATION",
+        state: [
+
+        ]
+    }
+    const res = term("KEY_WORD_CLASS", node.state) && term("ID", node.state) && BODY(node.state)
+    res && parentNode.push(node)
+    return res
 }
 
 const ARIFMETIC_OPERATION_STATEMENT = (parentNode) => {
@@ -150,23 +194,6 @@ const ARIFMETIC_OPERATOR = (node) => {
         return true
     }
     else if (saveNext(() => term("MATH_OP_MINUS", node))) {
-        return true
-    }
-
-    return false
-}
-
-
-const TYPE = (node) => {
-    let save = next;
-
-    const saveNext = (callback) => {
-        const result = callback();
-        if (!result) next = save;
-        return result;
-    }
-
-    if (saveNext(() => term("TYPE_INT", node))) {
         return true
     }
 
@@ -231,25 +258,6 @@ const EPSILON = (parentNode) => {
     const res = term("EPSILON", node.state)
     res && parentNode.push(node)
     return res
-}
-
-const VALUE = (parentNode) => {
-    let save = next;
-
-    const saveNext = (callback) => {
-        const result = callback();
-        if (!result) next = save;
-        return result;
-    }
-
-    if (saveNext(() => ARIFMETIC_OPERATION_STATEMENT(parentNode))) {
-        return true
-    }
-    else if (saveNext(() => term("INT", parentNode))) {
-        return true
-    }
-
-    return false
 }
 
 program()

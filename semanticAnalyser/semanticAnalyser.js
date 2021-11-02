@@ -17,8 +17,9 @@ class CompilerError {
     }
 */
 class IdentifierStructure {
-    constructor(identifier, is_declaration, position) {
+    constructor(identifier, type, is_declaration, position) {
         this.identifier = identifier
+        this.TYPE = type;
         this.is_declaration = is_declaration
         this.position = position
     }
@@ -44,10 +45,10 @@ class Scope {
         return this.SCOPE_ID;
     }
 
-    set_identifiers(identifier, is_declaration, position) {
+    set_identifiers(identifier, type, is_declaration, position) {
         if (is_declaration) this.is_identifier_declared_in_scope_check(identifier);
 
-        const identifier_structure = new IdentifierStructure(identifier, is_declaration, position);
+        const identifier_structure = new IdentifierStructure(identifier, type, is_declaration, position);
         return this.IDENTIFIERS.push(identifier_structure);
     }
 
@@ -67,10 +68,13 @@ class Scope {
         const scopeIdentifiers = this.get_identifiers;
         let exists = false;
         scopeIdentifiers.forEach((scopeIdentifier) => {
-            if (scopeIdentifier.identifier === identifier) exists = true;
+            if (scopeIdentifier.identifier === identifier) return exists = scopeIdentifier;
         })
-        return exists;
+
+        return exists
     }
+
+
 }
 
 class SymbolTable {
@@ -97,22 +101,30 @@ class SymbolTable {
         this.scope_stack.push(scope)
     }
 
-    update_last_scope(identifier, is_declaration, position) {
+    update_last_scope(identifier, type, is_declaration, position) {
 
         // Check is variable declared
-        if (!is_declaration && !this.find(identifier)) {
-            throw new CompilerError(`Variable "${identifier}" is not declared. On position: ${position}.`).message;
+        if (!is_declaration) {
+            if (!this.find(identifier)) {
+                throw new CompilerError(`Variable "${identifier}" is not declared. On position: ${position}.`).message;
+            }
+
+            const identifierStructure = this.find(identifier);
+            if (identifierStructure.TYPE !== type) { 
+                throw new CompilerError(`Variable "${identifier}" has type ${identifierStructure.TYPE}, type ${type} was assigned. On position: ${position}.`).message 
+            };
         }
 
         const last_scope_in_scope_stack = this.scope_stack[this.scope_stack.length - 1];
-        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers(identifier, is_declaration, position);
+        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers(identifier, type, is_declaration, position);
     }
 
     find(identifier) {
         const scope_stack = this.get_scope_stack;
         let exists = false;
         scope_stack.reverse().forEach((scope) => {
-            if (scope.find(identifier)) exists = true;
+            const scope_identifier = scope.find(identifier);
+            if (scope_identifier) exists = scope_identifier;
         })
 
         return exists;
@@ -168,13 +180,20 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
         if (node.TYPE === "VARIABLE_DECLARATION") {
             const identifier = node.state[2].lexem;
             const position = node.state[2].position;
-            symbol_table.update_last_scope(identifier, true, position);
+            const type = node.state[1].lexem;
+
+            // TODO: multiple types computation
+            const initial_value_type = node.state[4].TYPE;
+            if(initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
+
+            symbol_table.update_last_scope(identifier, type, true, position);
         }
 
         if (node.TYPE === "VARIABLE_ASSIGNEMENT") {
             const identifier = node.state[0].lexem;
             const position = node.state[0].position;
-            symbol_table.update_last_scope(identifier, false, position);
+            const type = node.state[2].TYPE;
+            symbol_table.update_last_scope(identifier, type, false, position);
         }
 
         if (node.TYPE === "ARIFMETIC_OPERATION_STATEMENT") {
@@ -182,7 +201,8 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
                 if (child_node.TYPE === "ID") {
                     const identifier = child_node.lexem;
                     const position = child_node.position;
-                    symbol_table.update_last_scope(identifier, false, position);
+                    const type = child_node.TYPE;
+                    symbol_table.update_last_scope(identifier, type, false, position);
                 }
             })
         }
@@ -195,5 +215,13 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
         }
     })
 }
+
+// const traverseAndComputeTypes = (AST) => {
+//     AST.forEach((node) => {
+//         if (node.TYPE === "VARIABLE_DECLARATION") {
+
+//         }
+//     })
+// }
 
 semanticAnalyser();

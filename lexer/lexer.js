@@ -228,7 +228,7 @@ const lexer = (string) => {
     string = runner(ofK, 2, string, tokens, fa);
 
     string = runner(int, 3, string, tokens, fa);
-    string = runner(string_value, 6, string, tokens, fa);
+    string = runner(type_string, 6, string, tokens, fa);
     
     string = runner(newLine, 1, string, tokens, fa);
     string = runner(commentDeclaration, 2, string, tokens, fa);

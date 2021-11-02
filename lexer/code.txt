@@ -1,3 +1,4 @@
 class main {
-    var STRING abc = "hello world";   
+    var INT abc = 123;
+    abc = "alalla";   
 }
