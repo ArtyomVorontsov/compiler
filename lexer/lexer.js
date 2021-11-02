@@ -6,7 +6,8 @@ const fs = require('fs');
 const util = require('util');
 
 const {
-    int
+    int,
+    type_string
 } = types;
 
 const {
@@ -61,7 +62,8 @@ const {
 
 const {
     variableIdentifier,
-    number
+    number,
+    string: string_value
 } = stringsAndNumbers
 
 
@@ -226,6 +228,7 @@ const lexer = (string) => {
     string = runner(ofK, 2, string, tokens, fa);
 
     string = runner(int, 3, string, tokens, fa);
+    string = runner(string_value, 6, string, tokens, fa);
     
     string = runner(newLine, 1, string, tokens, fa);
     string = runner(commentDeclaration, 2, string, tokens, fa);
@@ -248,8 +251,10 @@ const lexer = (string) => {
     string = runner(tab, 1, string, tokens, fa);
     string = runner(comma, 1, string, tokens, fa);
     string = runner(dot, 1, string, tokens, fa);
-    string = runner(quotes, 1, string, tokens, fa);
+  //  string = runner(quotes, 1, string, tokens, fa);
+  
     string = runner(number, 1, string, tokens, faId);
+    string = runner(string_value, 1 ,string , tokens, faId);
     string = runner(variableIdentifier, 1, string, tokens, faId);
     string = runner(space, 1, string, tokens, fa);
 

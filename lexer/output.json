@@ -1,1 +1,52 @@
-[{"TYPE":"KEY_WORD_CLASS","position":0,"lexem":"class"},{"TYPE":"ID","position":6,"lexem":"main"},{"TYPE":"OPEN_BRACE","position":11,"lexem":"{"},{"TYPE":"KEY_WORD_VAR","position":18,"lexem":"var"},{"TYPE":"TYPE_INT","position":22,"lexem":"INT"},{"TYPE":"ID","position":26,"lexem":"abc"},{"TYPE":"OPERATOR_ASSIGN","position":30,"lexem":"="},{"TYPE":"INT","position":32,"lexem":"10"},{"TYPE":"SEMI_COLON","position":34,"lexem":";"},{"TYPE":"KEY_WORD_VAR","position":43,"lexem":"var"},{"TYPE":"TYPE_INT","position":47,"lexem":"INT"},{"TYPE":"ID","position":51,"lexem":"bca"},{"TYPE":"OPERATOR_ASSIGN","position":55,"lexem":"="},{"TYPE":"INT","position":57,"lexem":"10"},{"TYPE":"SEMI_COLON","position":59,"lexem":";"},{"TYPE":"KEY_WORD_CLASS","position":66,"lexem":"class"},{"TYPE":"ID","position":72,"lexem":"cbd"},{"TYPE":"OPEN_BRACE","position":76,"lexem":"{"},{"TYPE":"KEY_WORD_VAR","position":86,"lexem":"var"},{"TYPE":"TYPE_INT","position":90,"lexem":"INT"},{"TYPE":"ID","position":94,"lexem":"abc"},{"TYPE":"OPERATOR_ASSIGN","position":98,"lexem":"="},{"TYPE":"INT","position":100,"lexem":"10"},{"TYPE":"SEMI_COLON","position":102,"lexem":";"},{"TYPE":"KEY_WORD_VAR","position":115,"lexem":"var"},{"TYPE":"TYPE_INT","position":119,"lexem":"INT"},{"TYPE":"ID","position":123,"lexem":"bca"},{"TYPE":"OPERATOR_ASSIGN","position":127,"lexem":"="},{"TYPE":"INT","position":129,"lexem":"10"},{"TYPE":"SEMI_COLON","position":131,"lexem":";"},{"TYPE":"CLOSE_BRACE","position":137,"lexem":"}"},{"TYPE":"KEY_WORD_CLASS","position":144,"lexem":"class"},{"TYPE":"ID","position":150,"lexem":"lol"},{"TYPE":"OPEN_BRACE","position":154,"lexem":"{"},{"TYPE":"KEY_WORD_VAR","position":164,"lexem":"var"},{"TYPE":"TYPE_INT","position":168,"lexem":"INT"},{"TYPE":"ID","position":172,"lexem":"bcaabc"},{"TYPE":"OPERATOR_ASSIGN","position":179,"lexem":"="},{"TYPE":"ID","position":181,"lexem":"abc"},{"TYPE":"MATH_OP_PLUS","position":185,"lexem":"+"},{"TYPE":"ID","position":187,"lexem":"bca"},{"TYPE":"SEMI_COLON","position":190,"lexem":";"},{"TYPE":"KEY_WORD_VAR","position":200,"lexem":"var"},{"TYPE":"TYPE_INT","position":204,"lexem":"INT"},{"TYPE":"ID","position":208,"lexem":"bcaabc"},{"TYPE":"OPERATOR_ASSIGN","position":215,"lexem":"="},{"TYPE":"ID","position":217,"lexem":"abc"},{"TYPE":"MATH_OP_PLUS","position":221,"lexem":"+"},{"TYPE":"ID","position":223,"lexem":"bca"},{"TYPE":"SEMI_COLON","position":226,"lexem":";"},{"TYPE":"CLOSE_BRACE","position":232,"lexem":"}"},{"TYPE":"CLOSE_BRACE","position":234,"lexem":"}"}]
+[
+    {
+        "TYPE": "KEY_WORD_CLASS",
+        "position": 0,
+        "lexem": "class"
+    },
+    {
+        "TYPE": "ID",
+        "position": 6,
+        "lexem": "main"
+    },
+    {
+        "TYPE": "OPEN_BRACE",
+        "position": 11,
+        "lexem": "{"
+    },
+    {
+        "TYPE": "KEY_WORD_VAR",
+        "position": 17,
+        "lexem": "var"
+    },
+    {
+        "TYPE": "ID",
+        "position": 21,
+        "lexem": "STRING"
+    },
+    {
+        "TYPE": "ID",
+        "position": 28,
+        "lexem": "abc"
+    },
+    {
+        "TYPE": "OPERATOR_ASSIGN",
+        "position": 32,
+        "lexem": "="
+    },
+    {
+        "TYPE": "STRING",
+        "position": 34,
+        "lexem": "\"hello world\""
+    },
+    {
+        "TYPE": "SEMI_COLON",
+        "position": 47,
+        "lexem": ";"
+    },
+    {
+        "TYPE": "CLOSE_BRACE",
+        "position": 52,
+        "lexem": "}"
+    }
+]

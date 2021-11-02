@@ -7,4 +7,16 @@ exports.types = {
         ],
         TYPE: "TYPE_INT"
     },
+
+    type_string: {
+        DFA: [
+            { "S": 1 },
+            { "T": 2 },
+            { "R": 3 },
+            { "I": 4 },
+            { "N": 5 },
+            { "G": 6 }
+        ],
+        TYPE: "TYPE_STRING"
+    },
 }

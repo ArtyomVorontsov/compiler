@@ -1,14 +1,3 @@
 class main {
-
-    var INT abc = 10;   
-    var INT bca = 10;
-
-    class cbd {
-        var INT abc = 10;   
-        var INT bca = 10;
-    }
-
-    class lol {
-        var INT bcaabc = abc + bca;
-    }
+    var STRING abc = "hello world";   
 }
