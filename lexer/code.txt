@@ -1,17 +1,14 @@
 class main {
-    var INT lol = 50;
-    
-    class hello {
-        var INT i = 50;
-        return i;
+
+    var INT abc = 10;   
+    var INT bca = 10;
+
+    class cbd {
+        var INT abc = 10;   
+        var INT bca = 10;
     }
 
-    class hi {
-        var INT i = 0;
+    class lol {
+        var INT bcaabc = abc + bca;
     }
-
-    var INT bca = 12;
-
-    var INT abc = lol + bca;
-    var INT bbb = lol - bca;
 }

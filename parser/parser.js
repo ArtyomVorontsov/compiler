@@ -112,9 +112,6 @@ const EXPRESSION = (node) => {
     else if (saveNext(() => VARIABLE_ASSIGNEMENT(node))) {
         return true
     }
-    else if (saveNext(() => ARIFMETIC_OPERATION_STATEMENT(node))) {
-        return true
-    }
     else if (saveNext(() => EPSILON(node))) {
         return true
     }
@@ -122,7 +119,25 @@ const EXPRESSION = (node) => {
     return false
 }
 
-const ARIFMETIC_OPERATION_STATEMENT = (node) => {
+const ARIFMETIC_OPERATION_STATEMENT = (parentNode) => {
+    const node = {
+        TYPE: "ARIFMETIC_OPERATION_STATEMENT",
+        state: [
+
+        ]
+    }
+
+    const res =
+        (term("ID", node.state)) &&
+        ARIFMETIC_OPERATOR(node.state) &&
+        (term("ID", node.state));
+        
+    res && parentNode.push(node)
+    return res
+}
+
+
+const ARIFMETIC_OPERATOR = (node) => {
     let save = next;
 
     const saveNext = (callback) => {
@@ -131,54 +146,16 @@ const ARIFMETIC_OPERATION_STATEMENT = (node) => {
         return result;
     }
 
-    if (saveNext(() => ADDITION_EXPRESSION(node))) {
+    if (saveNext(() => term("MATH_OP_PLUS", node))) {
         return true
-    } else if (saveNext(() => SUBSTRACTION_EXPRESSION(node))) {
+    }
+    else if (saveNext(() => term("MATH_OP_MINUS", node))) {
         return true
     }
 
     return false
 }
 
-const SUBSTRACTION_EXPRESSION = (parentNode) => {
-    const node = {
-        TYPE: "SUBSTRACTION_EXPRESSION",
-        state: [
-
-        ]
-    }
-
-    const res = term("KEY_WORD_VAR", node.state) &&
-        TYPE(node.state) &&
-        term("ID", node.state) &&
-        term("OPERATOR_ASSIGN", node.state) &&
-        term("ID", node.state) &&
-        term("MATH_OP_MINUS", node.state) &&
-        term("ID", node.state) &&
-        term("SEMI_COLON", node.state);
-    res && parentNode.push(node)
-    return res
-}
-
-const ADDITION_EXPRESSION = (parentNode) => {
-    const node = {
-        TYPE: "ADDITION_EXPRESSION",
-        state: [
-
-        ]
-    }
-
-    const res = term("KEY_WORD_VAR", node.state) &&
-        TYPE(node.state) &&
-        term("ID", node.state) &&
-        term("OPERATOR_ASSIGN", node.state) &&
-        term("ID", node.state) &&
-        term("MATH_OP_PLUS", node.state) &&
-        term("ID", node.state) &&
-        term("SEMI_COLON", node.state);
-    res && parentNode.push(node)
-    return res
-}
 
 const TYPE = (node) => {
     let save = next;
@@ -265,7 +242,10 @@ const VALUE = (parentNode) => {
         return result;
     }
 
-    if (saveNext(() => term("INT", parentNode))) {
+    if (saveNext(() => ARIFMETIC_OPERATION_STATEMENT(parentNode))) {
+        return true
+    }
+    else if (saveNext(() => term("INT", parentNode))) {
         return true
     }
 

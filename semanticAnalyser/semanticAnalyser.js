@@ -9,56 +9,113 @@ class CompilerError {
     }
 }
 
+/*
+    IdentifierStructure: {
+        identifier: string;
+        is_declaration: boolean;
+        position: number;
+    }
+*/
+class IdentifierStructure {
+    constructor(identifier, is_declaration, position) {
+        this.identifier = identifier
+        this.is_declaration = is_declaration
+        this.position = position
+    }
+}
+
+/*
+    Scope: {
+        SCOPE_ID: number;
+        IDENTIFIERS: IdentifierStructure[]
+    }
+*/
 class Scope {
-    constructor(SCOPE_ID, IDENTIFIERS, DECLARED_IDENTIFIERS) {
+    constructor(SCOPE_ID, IDENTIFIERS) {
         this.SCOPE_ID = SCOPE_ID;
         this.IDENTIFIERS = IDENTIFIERS;
-        this.DECLARED_IDENTIFIERS = DECLARED_IDENTIFIERS;
     }
 
     get get_identifiers() {
         return this.IDENTIFIERS;
     }
 
-    get get_declared_identifiers() {
-        return this.DECLARED_IDENTIFIERS;
-    }
-
     get get_scope_id() {
         return this.SCOPE_ID;
     }
 
-    set_identifiers(identifier) {
-        return this.IDENTIFIERS.push(identifier);
+    set_identifiers(identifier, is_declaration, position) {
+        if (is_declaration) this.is_identifier_declared_in_scope_check(identifier);
+
+        const identifier_structure = new IdentifierStructure(identifier, is_declaration, position);
+        return this.IDENTIFIERS.push(identifier_structure);
     }
 
-    set_declated_identifiers(declared_identifier) {
-        return this.DECLARED_IDENTIFIERS.push(declared_identifier);
+    is_identifier_declared_in_scope_check(identifier) {
+        // Checking identifier declatation in scope.
+        this.IDENTIFIERS.forEach(identifierStructure => {
+            if (identifierStructure.is_declaration) {
+                if (identifierStructure.identifier === identifier) {
+                    throw new CompilerError(`Identifier ${identifier} already declared in this scope. 
+                    On position ${identifierStructure.position}`).message;
+                }
+            }
+        })
+    }
+
+    find(identifier) {
+        const scopeIdentifiers = this.get_identifiers;
+        let exists = false;
+        scopeIdentifiers.forEach((scopeIdentifier) => {
+            if (scopeIdentifier.identifier === identifier) exists = true;
+        })
+        return exists;
     }
 }
 
 class SymbolTable {
-    constructor(scope_stack){
+    constructor(scope_stack) {
         this.scope_stack = scope_stack;
     }
 
-    get get_scope_stack(){
+    get get_scope_stack() {
         return this.scope_stack;
     }
 
-    symbol_table_scope_push(scope){
+    // Classic push method. (preferable to use create_scope method)
+    scope_push(scope) {
         this.scope_stack.push(scope)
     }
 
-    symbol_table_scope_pop(){
-       return this.scope_stack.pop();
+    scope_pop() {
+        return this.scope_stack.pop();
     }
 
-    update_last_scope({identifier, declared_identifier}){
+    // Create scope without passing scope object into method.
+    create_scope(scope_id) {
+        const scope = new Scope(scope_id, []);
+        this.scope_stack.push(scope)
+    }
+
+    update_last_scope(identifier, is_declaration, position) {
+
+        // Check is variable declared
+        if (!is_declaration && !this.find(identifier)) {
+            throw new CompilerError(`Variable "${identifier}" is not declared. On position: ${position}.`).message;
+        }
 
         const last_scope_in_scope_stack = this.scope_stack[this.scope_stack.length - 1];
-        identifier && last_scope_in_scope_stack.set_identifiers(identifier);
-        declared_identifier && last_scope_in_scope_stack.set_declated_identifiers(declared_identifier);
+        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers(identifier, is_declaration, position);
+    }
+
+    find(identifier) {
+        const scope_stack = this.get_scope_stack;
+        let exists = false;
+        scope_stack.reverse().forEach((scope) => {
+            if (scope.find(identifier)) exists = true;
+        })
+
+        return exists;
     }
 
 }
@@ -92,9 +149,9 @@ const getAST = () => {
     }
 }
 
-
 const scopeCreator = (AST) => {
-    const symbol_table = new SymbolTable([new Scope(AST[0].state[0].position, [], [])]);
+    const initial_scope = new Scope(AST[0].state[0].position, [])
+    const symbol_table = new SymbolTable([initial_scope]);
     const symbol_table_snapshot = []
     traverseAstAndComputeScopes(AST[0].state, symbol_table, symbol_table_snapshot, 0)
 
@@ -103,81 +160,40 @@ const scopeCreator = (AST) => {
 
 const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, index) => {
     AST.forEach((node) => {
+        if (node.TYPE === "CLASS_DECLARATION") {
+            const scope_id = node.state[0].position
+            symbol_table.create_scope(scope_id);
+        }
 
-        // Create scope.
-        if (node.TYPE === "CLASS_DECLARATION") {    
-        
-             const identifier = { IDENTIFIER: node.state[1].lexem, TYPE_OF_EXPRESSION: node.state[0] };
-            // Register class name in scope 
-            symbol_table.update_last_scope({identifier, declared_identifier: node.state[1]});
+        if (node.TYPE === "VARIABLE_DECLARATION") {
+            const identifier = node.state[2].lexem;
+            const position = node.state[2].position;
+            symbol_table.update_last_scope(identifier, true, position);
+        }
 
-            // Traverse each class node 
-            node.state.forEach(class_node => {
-                if (class_node.TYPE === "BODY") {
-                    //Create new scope, and push it on top of the scope stack.
-                    symbol_table.symbol_table_scope_push(new Scope(node.state[0].position, [], []));
+        if (node.TYPE === "VARIABLE_ASSIGNEMENT") {
+            const identifier = node.state[0].lexem;
+            const position = node.state[0].position;
+            symbol_table.update_last_scope(identifier, false, position);
+        }
 
-                    traverseAstAndComputeScopes(class_node.state, symbol_table, symbol_table_snapshot, ++index)
-
-                    // Clear symbol table scope.
-                    symbol_table_snapshot.push(symbol_table.symbol_table_scope_pop());
+        if (node.TYPE === "ARIFMETIC_OPERATION_STATEMENT") {
+            node.state.forEach((child_node) => {
+                if (child_node.TYPE === "ID") {
+                    const identifier = child_node.lexem;
+                    const position = child_node.position;
+                    symbol_table.update_last_scope(identifier, false, position);
                 }
             })
         }
 
-        // Register identifiers in symbol_table.
-        if (node.TYPE === "VARIABLE_DECLARATION" || node.TYPE === "VARIABLE_ASSIGNEMENT") {
+        node.state && traverseAstAndComputeScopes(node.state, symbol_table, symbol_table_snapshot, index);
 
-            // Register identifiers usage in scope
-            node.state.forEach((terminal, index) => {
-                if (terminal.TYPE === "ID") {
-                    let TYPE_OF_EXPRESSION = node.state[index - 2];
-
-                    if (!TYPE_OF_EXPRESSION) {
-                        TYPE_OF_EXPRESSION = { TYPE: 'VARIABLE_ASSIGNEMENT', position: node.state[index].position, lexem: null }
-                    }
-                    symbol_table.update_last_scope({identifier: {IDENTIFIER: terminal.lexem, TYPE_OF_EXPRESSION }});
-                }
-            })
-
-            // Register identifiers declaration in scope.
-            if (node.TYPE === "VARIABLE_DECLARATION")
-                symbol_table.update_last_scope({declared_identifier: node.state[2]});
+        if (node.TYPE === "CLASS_DECLARATION") {
+            // For testing purposes
+            symbol_table_snapshot.push(symbol_table.scope_pop());
         }
-    });
-
-    // Check for variable unique declaration in scope.
-    symbol_table.get_scope_stack.forEach((scope) => {
-        const unique_symbols = [];
-        scope.DECLARED_IDENTIFIERS.forEach((declared_name) => {
-            if (!unique_symbols.includes(declared_name.lexem)) {
-                unique_symbols.push(declared_name.lexem)
-            } else {
-                const error = new CompilerError(`
-                Error: Variable ${declared_name.lexem} already declared in this scope.\n
-                On position ${declared_name.position}`, "red");
-                throw error.message;
-            }
-        })
     })
-
-    // Check for variable is declared.
-    symbol_table.get_scope_stack.forEach((scope) => {
-        scope.IDENTIFIERS.forEach((element) => {
-            const declared_names = []
-            scope.DECLARED_IDENTIFIERS.forEach((declared_name) => {
-                declared_names.push(declared_name.lexem)
-            })
-
-            if (!declared_names.includes(element.IDENTIFIER)) {
-                const error = new CompilerError(`
-                Error: Variable ${element.IDENTIFIER} is not declared in this scope.\n
-                On position ${element.TYPE_OF_EXPRESSION.position}`, "red");
-                throw error.message;
-            }
-        })
-    })
-
 }
 
 semanticAnalyser();
