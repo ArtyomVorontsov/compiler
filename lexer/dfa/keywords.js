@@ -210,4 +210,17 @@ exports.keywords = {
         TYPE: "KEY_WORD_VAR"
     },
 
+    extendsK: {
+        DFA: [
+            { "e": 1 },
+            { "x": 2 },
+            { "t": 3 },
+            { "e": 4 },
+            { "n": 5 },
+            { "d": 6 },
+            { "s": 7 }
+        ],
+        TYPE: "KEY_WORD_EXTENDS"
+    },
+
 }

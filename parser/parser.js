@@ -146,7 +146,7 @@ const BODY = (parentNode) => {
 
         ]
     }
-    const res = term("OPEN_BRACE", node.state) && MULTI_EXPRESSION(node.state) && term("CLOSE_BRACE", node.state);
+    const res = term("OPEN_BRACE", node.state) && ((MULTI_EXPRESSION(node.state) && term("CLOSE_BRACE", node.state)) || term("CLOSE_BRACE", node.state));
     res && parentNode.push(node)
     return res
 }
@@ -158,8 +158,42 @@ const CLASS_DECLARATION = (parentNode) => {
 
         ]
     }
-    const res = term("KEY_WORD_CLASS", node.state) && term("ID", node.state) && BODY(node.state)
+    const res = term("KEY_WORD_CLASS", node.state) && term("ID", node.state) && CLASS_DECLARATION_TYPE_STATEMENT(node.state);
+
     res && parentNode.push(node)
+    return res
+}
+
+const CLASS_DECLARATION_TYPE_STATEMENT = (node) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => BODY(node))) {
+        return true
+    } 
+    else if (saveNext(() => EXTENDS_STATEMENT(node))){
+        return true;
+    }
+
+    return false
+}
+
+const EXTENDS_STATEMENT = (parentNode) => {
+    const node = {
+        TYPE: "EXTENDS_STATEMENT",
+        state: [
+
+        ]
+    }
+    const res = term("KEY_WORD_EXTENDS", node.state) && term("ID", node.state) && BODY(node.state)
+
+    // If we want remove TYPE: "EXTENDS_STATEMENT" from AST, we can spread all subnodes into parent node
+    res && parentNode.push(...node.state)
     return res
 }
 

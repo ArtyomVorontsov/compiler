@@ -1,4 +1,9 @@
 class main {
-    var INT abc = 123;
-    abc = "alalla";   
+    class mem {
+    }
+
+    class lol extends mem {
+        var INT abc = 312;   
+    }
+
 }

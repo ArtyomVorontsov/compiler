@@ -58,6 +58,7 @@ const {
     newK,
     notK,
     ofK,
+    extendsK
 } = keywords;
 
 const {
@@ -226,6 +227,7 @@ const lexer = (string) => {
     string = runner(newK, 3, string, tokens, fa);
     string = runner(notK, 3, string, tokens, fa);
     string = runner(ofK, 2, string, tokens, fa);
+    string = runner(extendsK, 7, string, tokens, fa);
 
     string = runner(int, 3, string, tokens, fa);
     string = runner(type_string, 6, string, tokens, fa);
