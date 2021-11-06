@@ -223,4 +223,59 @@ exports.keywords = {
         TYPE: "KEY_WORD_EXTENDS"
     },
 
+    functionK: {
+        DFA: [
+            { "f": 1 },
+            { "u": 2 },
+            { "n": 3 },
+            { "c": 4 },
+            { "t": 5 },
+            { "i": 6 },
+            { "o": 7 },
+            { "n": 8 }
+        ],
+        TYPE: "KEY_WORD_FUNCTION"
+    },
+
+    // Access modifiers
+
+    privateK: {
+        DFA: [
+            { "p": 1 },
+            { "r": 2 },
+            { "i": 3 },
+            { "v": 4 },
+            { "a": 5 },
+            { "t": 6 },
+            { "e": 7 },
+        ],
+        TYPE: "KEY_WORD_PRIVATE"
+    },
+
+    protectedK: {
+        DFA: [
+            { "p": 1 },
+            { "r": 2 },
+            { "o": 3 },
+            { "t": 4 },
+            { "e": 5 },
+            { "c": 6 },
+            { "t": 7 },
+            { "e": 8 },
+            { "d": 9 }
+        ],
+        TYPE: "KEY_WORD_PROTECTED"
+    },
+
+    publicK: {
+        DFA: [
+            { "p": 1 },
+            { "u": 2 },
+            { "b": 3 },
+            { "l": 4 },
+            { "i": 5 },
+            { "c": 6 },
+        ],
+        TYPE: "KEY_WORD_PUBLIC"
+    }
 }

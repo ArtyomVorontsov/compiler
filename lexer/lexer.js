@@ -58,7 +58,11 @@ const {
     newK,
     notK,
     ofK,
-    extendsK
+    extendsK,
+    functionK,
+    privateK,
+    protectedK,
+    publicK
 } = keywords;
 
 const {
@@ -228,6 +232,10 @@ const lexer = (string) => {
     string = runner(notK, 3, string, tokens, fa);
     string = runner(ofK, 2, string, tokens, fa);
     string = runner(extendsK, 7, string, tokens, fa);
+    string = runner(functionK, 8, string, tokens, fa);
+    string = runner(privateK, privateK.DFA.length, string, tokens, fa);
+    string = runner(protectedK, protectedK.DFA.length, string, tokens, fa);
+    string = runner(publicK, publicK.DFA.length, string, tokens, fa);
 
     string = runner(int, 3, string, tokens, fa);
     string = runner(type_string, 6, string, tokens, fa);

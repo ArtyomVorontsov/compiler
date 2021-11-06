@@ -1,14 +1,13 @@
 class main {
 
-    
-    var INT abvgd = 11;
-    abvgd = 20;
-
-    class mem {
-    }
-
     class lol extends mem {
-        var INT abc = 312;   
+
+        private INT function abc(INT bca, STRING memmm){
+
+        }
+
+        protected STRING parameter;
+        public STRING parameterTwo = 2;
     }
 
 }

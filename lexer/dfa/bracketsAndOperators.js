@@ -3,14 +3,14 @@ exports.bracketsAndOperators = {
         DFA: [
             { "(": 1 }
         ],
-        TYPE: "PARENTHESES"
+        TYPE: "OPEN_PARENTHESES"
     },
 
     closeParentheses: {
         DFA: [
             { ")": 1 }
         ],
-        TYPE: "PARENTHESES"
+        TYPE: "CLOSE_PARENTHESES"
     },
 
     openBracket: {
