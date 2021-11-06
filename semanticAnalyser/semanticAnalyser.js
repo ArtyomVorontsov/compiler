@@ -17,7 +17,7 @@ class CompilerError {
     }
 */
 class IdentifierStructure {
-    constructor({identifier, type, is_declaration, position, return_type}) {
+    constructor({ identifier, type, is_declaration, position, return_type }) {
         this.identifier = identifier
         this.TYPE = type;
         this.is_declaration = is_declaration
@@ -46,10 +46,10 @@ class Scope {
         return this.SCOPE_ID;
     }
 
-    set_identifiers({identifier, type, is_declaration, position, return_type}) {
+    set_identifiers({ identifier, type, is_declaration, position, return_type }) {
         if (is_declaration) this.is_identifier_declared_in_scope_check(identifier);
 
-        const identifier_structure = new IdentifierStructure({identifier, type, is_declaration, position, return_type});
+        const identifier_structure = new IdentifierStructure({ identifier, type, is_declaration, position, return_type });
         return this.IDENTIFIERS.push(identifier_structure);
     }
 
@@ -102,7 +102,7 @@ class SymbolTable {
         this.scope_stack.push(scope)
     }
 
-    update_last_scope({identifier, type, is_declaration, position, extends_class, return_type}) {
+    update_last_scope({ identifier, type, is_declaration, position, extends_class, return_type }) {
 
         // Check is variable declared
         if (!is_declaration) {
@@ -119,7 +119,7 @@ class SymbolTable {
         const types_inheritance = extends_class ? [type, extends_class, "Object"] : [type, "Object"];
 
         const last_scope_in_scope_stack = this.scope_stack[this.scope_stack.length - 1];
-        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers({identifier, type: types_inheritance, is_declaration, position, return_type});
+        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers({ identifier, type: types_inheritance, is_declaration, position, return_type });
     }
 
     find(identifier) {
@@ -174,6 +174,8 @@ const scopeCreator = (AST) => {
 }
 
 const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, index) => {
+    ++index
+    let return_value;
     AST.forEach((node) => {
         if (node.TYPE === "CLASS_DECLARATION") {
             const scope_id = node.state[0].position
@@ -185,12 +187,12 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
 
             // Extends support
             const extends_class = node.state[2].lexem === "extends" ? node.state[3].lexem : null;
-            if( extends_class &&!symbol_table.find(extends_class)){
+            if (extends_class && !symbol_table.find(extends_class)) {
                 throw new CompilerError(`Class ${extends_class} is not declared. On position ${node.state[3].position}`).message
             };
 
             // Add identifier inside scope
-            symbol_table.update_last_scope({identifier, type, is_declaration: true, position, extends_class});
+            symbol_table.update_last_scope({ identifier, type, is_declaration: true, position, extends_class });
 
             // Create scope inside class
             symbol_table.create_scope(scope_id);
@@ -205,7 +207,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             const initial_value_type = node.state[4].TYPE;
             if (initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
 
-            symbol_table.update_last_scope({identifier, type, is_declaration: true, position});
+            symbol_table.update_last_scope({ identifier, type, is_declaration: true, position });
         }
 
         if (node.TYPE === "CLASS_PARAMETER_DECLARATION" ||
@@ -216,28 +218,42 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
 
             // TODO: multiple types computation
             const initValue = node.state[4];
-            if(initValue){
+            if (initValue) {
                 const initial_value_type = initValue.TYPE;
-                if (initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message   
+                if (initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
             }
 
-            symbol_table.update_last_scope({identifier, type, is_declaration: true, position});
+            symbol_table.update_last_scope({ identifier, type, is_declaration: true, position });
         }
 
-        if (node.TYPE === "FUNCTION_STATEMENT"){
+        if (node.TYPE === "FUNCTION_STATEMENT") {
             const identifier = node.state[3].lexem;
             const position = node.state[3].position;
             const type = node.state[2].lexem;
             const return_type = node.state[1].lexem;
+            const scope_id = node.state[0].position;
 
-            symbol_table.update_last_scope({identifier, type, is_declaration: true, position, return_type});
+            symbol_table.update_last_scope({ identifier, type, is_declaration: true, position, return_type });
+            // Create scope inside function
+            symbol_table.create_scope(scope_id);
+        }
+
+        if (node.TYPE === "RETURN_STATEMENT") {
+            const return_type = node.state[1].TYPE;
+            const lexem = node.state[1].lexem;
+            if (return_type === "ID") {
+                const identifier = symbol_table.find(lexem);
+                if (!identifier) throw new CompilerError(`Variable ${lexem} is not declared.`).message
+                return return_value = identifier.TYPE[0];
+            }
+            return return_value = return_type;
         }
 
         if (node.TYPE === "VARIABLE_ASSIGNEMENT") {
             const identifier = node.state[0].lexem;
             const position = node.state[0].position;
             const type = node.state[2].TYPE;
-            symbol_table.update_last_scope({identifier, type, is_declaration: false, position});
+            symbol_table.update_last_scope({ identifier, type, is_declaration: false, position });
         }
 
         if (node.TYPE === "ARIFMETIC_OPERATION_STATEMENT") {
@@ -246,18 +262,30 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
                     const identifier = child_node.lexem;
                     const position = child_node.position;
                     const type = child_node.TYPE;
-                    symbol_table.update_last_scope({identifier, type, is_declaration: false, position});
+                    symbol_table.update_last_scope({ identifier, type, is_declaration: false, position });
                 }
             })
         }
 
-        node.state && traverseAstAndComputeScopes(node.state, symbol_table, symbol_table_snapshot, index);
+        const returned_value = node.state && traverseAstAndComputeScopes(node.state, symbol_table, symbol_table_snapshot, index);
 
-        if (node.TYPE === "CLASS_DECLARATION") {
+        if(node.TYPE === "BODY"){
+            return_value = returned_value;
+        }
+
+        if (node.TYPE === "FUNCTION_STATEMENT") {
+            const return_type = node.state[1].lexem;
+            if (returned_value !== return_type)
+                throw new CompilerError(`Function return type is ${return_type} type ${returned_value} was returned.`).message
+        }
+
+        if (node.TYPE === "CLASS_DECLARATION" || node.TYPE === "FUNCTION_STATEMENT") {
             // For testing purposes
             symbol_table_snapshot.push(symbol_table.scope_pop());
         }
     })
+
+    return return_value;
 }
 
 semanticAnalyser();

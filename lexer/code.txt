@@ -1,13 +1,19 @@
 class main {
 
     class mem {
+
+    }
+
+    class ahah{
         
     }
+    
+    var INT hehe = 123;
 
     class lol extends mem {
 
         private INT function abc(INT bca, STRING memmm){
-
+            return hehe;
         }
 
         protected STRING parameter;

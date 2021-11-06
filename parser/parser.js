@@ -390,10 +390,30 @@ const RETURN_STATEMENT = (parentNode) => {
 
         ]
     }
-    const res = term("KEY_WORD_RETURN", node.state) && term("ID", node.state) &&
+
+    const res = term("KEY_WORD_RETURN", node.state) &&  RETURN_STATEMENT_TYPE(node.state) &&
         term("SEMI_COLON", node.state)
     res && parentNode.push(node)
     return res
+}
+
+const RETURN_STATEMENT_TYPE = (node) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => term("ID", node))) {
+        return true
+    }
+    else if (saveNext(() => VALUE(node))) {
+        return true
+    }
+
+    return false
 }
 
 
