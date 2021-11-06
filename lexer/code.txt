@@ -1,5 +1,9 @@
 class main {
 
+    class mem {
+        
+    }
+
     class lol extends mem {
 
         private INT function abc(INT bca, STRING memmm){
@@ -7,7 +11,7 @@ class main {
         }
 
         protected STRING parameter;
-        public STRING parameterTwo = 2;
+        public STRING parameterTwo = "sorry for mistake";
     }
 
 }
