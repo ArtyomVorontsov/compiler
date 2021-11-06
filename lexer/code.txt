@@ -1,4 +1,9 @@
 class main {
+
+    
+    var INT abvgd = 11;
+    abvgd = 20;
+
     class mem {
     }
 

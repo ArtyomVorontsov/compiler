@@ -101,7 +101,7 @@ class SymbolTable {
         this.scope_stack.push(scope)
     }
 
-    update_last_scope(identifier, type, is_declaration, position) {
+    update_last_scope(identifier, type, is_declaration, position, extends_class) {
 
         // Check is variable declared
         if (!is_declaration) {
@@ -110,13 +110,15 @@ class SymbolTable {
             }
 
             const identifierStructure = this.find(identifier);
-            if (identifierStructure.TYPE !== type) { 
-                throw new CompilerError(`Variable "${identifier}" has type ${identifierStructure.TYPE}, type ${type} was assigned. On position: ${position}.`).message 
+            if (identifierStructure.TYPE[0] !== type) {
+                throw new CompilerError(`Variable "${identifier}" has type ${identifierStructure.TYPE}, type ${type} was assigned. On position: ${position}.`).message
             };
         }
 
+        const types_inheritance = extends_class ? [type, extends_class, "Object"] : [type, "Object"];
+
         const last_scope_in_scope_stack = this.scope_stack[this.scope_stack.length - 1];
-        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers(identifier, type, is_declaration, position);
+        identifier && last_scope_in_scope_stack && last_scope_in_scope_stack.set_identifiers(identifier, types_inheritance, is_declaration, position);
     }
 
     find(identifier) {
@@ -174,6 +176,19 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
     AST.forEach((node) => {
         if (node.TYPE === "CLASS_DECLARATION") {
             const scope_id = node.state[0].position
+
+            // Update scope with class identifier
+            const identifier = node.state[1].lexem;
+            const position = node.state[1].position;
+            const type = node.state[1].lexem;
+
+            // Extends support
+            const extends_class = node.state[2].lexem === "extends" ? node.state[3].lexem : null;
+
+            // Add identifier inside scope
+            symbol_table.update_last_scope(identifier, type, true, position, extends_class);
+
+            // Create scope inside class
             symbol_table.create_scope(scope_id);
         }
 
@@ -184,7 +199,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
 
             // TODO: multiple types computation
             const initial_value_type = node.state[4].TYPE;
-            if(initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
+            if (initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
 
             symbol_table.update_last_scope(identifier, type, true, position);
         }
