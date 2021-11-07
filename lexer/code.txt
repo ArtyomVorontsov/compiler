@@ -1,23 +1,24 @@
 class main {
 
-    class mem {
-
+    class irstlfevelone {
+        var INT hehe = 123;
     }
 
-    class ahah{
-        
+    class irstleveltwo{
+        var INT hehe = 123;
     }
     
-    var INT hehe = 123;
+    var INT irstlevelthree = 123;
 
-    class lol extends mem {
 
-        private INT function abc(INT bca, STRING memmm){
-            return hehe;
+    class irstlevelfour {
+
+        private INT function secondlevelone(INT thirdlevelone){
+            return 123;
         }
 
-        protected STRING parameter;
-        public STRING parameterTwo = "sorry for mistake";
+        protected STRING secondleveltwo;
+        public STRING secondlevelthree = "sorry for mistake";
     }
 
 }

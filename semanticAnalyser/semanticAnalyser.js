@@ -12,8 +12,10 @@ class CompilerError {
 /*
     IdentifierStructure: {
         identifier: string;
+        type: Array<string>;
         is_declaration: boolean;
         position: number;
+        return_type: Array<string> | string
     }
 */
 class IdentifierStructure {
