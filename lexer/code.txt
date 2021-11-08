@@ -1,24 +1,19 @@
 class main {
 
-    class irstlfevelone {
-        var INT hehe = 123;
-    }
+    class Mem {
 
-    class irstleveltwo{
-        var INT hehe = 123;
-    }
-    
-    var INT irstlevelthree = 123;
-
-
-    class irstlevelfour {
-
-        private INT function secondlevelone(INT thirdlevelone){
-            return 123;
+        public Mem function Mem(){
+            
         }
 
-        protected STRING secondleveltwo;
-        public STRING secondlevelthree = "sorry for mistake";
+        var INT hehe = 123;
     }
+
+    class Lol {
+        public Mem memObject = new Mem();
+
+
+    }
+
 
 }

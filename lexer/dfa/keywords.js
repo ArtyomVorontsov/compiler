@@ -169,7 +169,7 @@ exports.keywords = {
             { "e": 2 },
             { "w": 3 },
         ],
-        TYPE: "KEY_WORD"
+        TYPE: "KEY_WORD_NEW"
     },
 
     notK: {

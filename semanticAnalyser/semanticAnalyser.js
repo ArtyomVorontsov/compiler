@@ -135,6 +135,10 @@ class SymbolTable {
         return exists;
     }
 
+    get get_last_scope_id(){
+        return this.get_scope_stack.reverse()[0].get_scope_id;
+    }
+
 }
 
 const semanticAnalyser = () => {
@@ -216,12 +220,17 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             node.TYPE === "CLASS_PARAMETER_DECLARATION_WITH_INIT") {
             const identifier = node.state[2].lexem;
             const position = node.state[2].position;
-            const type = node.state[1].lexem;
+            let type = node.state[1].lexem;
 
             // TODO: multiple types computation
             const initValue = node.state[4];
             if (initValue) {
-                const initial_value_type = initValue.TYPE;
+                let initial_value_type = initValue.TYPE;
+
+                // Hande class init
+                if (initial_value_type === "CLASS_INIT")
+                    initial_value_type = initValue.state[1].lexem;
+
                 if (initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
             }
 
@@ -233,7 +242,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             const position = node.state[3].position;
             const type = node.state[2].lexem;
             const return_type = node.state[1].lexem;
-            const scope_id = node.state[0].position;
+            const scope_id = node.state[3].lexem;
 
             symbol_table.update_last_scope({ identifier, type, is_declaration: true, position, return_type });
             // Create scope inside function
@@ -258,6 +267,13 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             symbol_table.update_last_scope({ identifier, type, is_declaration: false, position });
         }
 
+        if (node.TYPE === "FUNCTION_ARGUMENT") {
+            const identifier = node.state[1].lexem;
+            const position = node.state[1].position;
+            const type = node.state[0].lexem;
+            symbol_table.update_last_scope({ identifier, type, is_declaration: true, position });
+        }
+
         if (node.TYPE === "ARIFMETIC_OPERATION_STATEMENT") {
             node.state.forEach((child_node) => {
                 if (child_node.TYPE === "ID") {
@@ -271,13 +287,14 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
 
         const returned_value = node.state && traverseAstAndComputeScopes(node.state, symbol_table, symbol_table_snapshot, index);
 
-        if(node.TYPE === "BODY"){
+        if (node.TYPE === "BODY") {
             return_value = returned_value;
         }
 
         if (node.TYPE === "FUNCTION_STATEMENT") {
             const return_type = node.state[1].lexem;
-            if (returned_value !== return_type)
+            const is_constructor = symbol_table.get_last_scope_id === return_type;
+            if ((returned_value !== return_type) && !is_constructor )
                 throw new CompilerError(`Function return type is ${return_type} type ${returned_value} was returned.`).message
         }
 
@@ -287,7 +304,8 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
         }
     })
 
-    return return_value;
+    // If no type was returned, we return Undefined type.
+    return return_value || "Undefined";
 }
 
 semanticAnalyser();

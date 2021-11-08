@@ -123,6 +123,9 @@ const VALUE = (parentNode) => {
     else if (saveNext(() => term("INT", parentNode))) {
         return true
     }
+    else if (saveNext(() => CLASS_INIT(parentNode))) {
+        return true
+    }
 
     return false
 }
@@ -165,6 +168,15 @@ const TYPE = (node) => {
         return true
     }
     else if (saveNext(() => term("TYPE_INT", node))) {
+        return true;
+    }
+    else if (saveNext(() => term("INT", node))) {
+        return true;
+    }
+    else if (saveNext(() => term("STRING", node))) {
+        return true;
+    }
+    else if (saveNext(() => term("ID", node))) {
         return true;
     }
 
@@ -217,6 +229,20 @@ const CLASS_DECLARATION_TYPE_STATEMENT = (node) => {
     return false
 }
 
+const CLASS_INIT = (parentNode) => {
+    const node = {
+        TYPE: "CLASS_INIT",
+        state: [
+
+        ]
+    }
+    const res = term("KEY_WORD_NEW", node.state) && term("ID", node.state) &&
+        term("OPEN_PARENTHESES", node.state) && FUNCTION_ARGUMENTS(node.state) &&
+        term("CLOSE_PARENTHESES", node.state);
+    res && parentNode.push(node)
+    return res
+}
+
 const EXTENDS_STATEMENT = (parentNode) => {
     const node = {
         TYPE: "EXTENDS_STATEMENT",
@@ -257,14 +283,16 @@ const FUNCTION_ARGUMENTS = (parentNode) => {
 
     const isValid = []
     do {
-        isValid.push(isValid.length > 0 ? (term("COMMA", node.state) && FUNCTION_ARGUMENT(node.state)) : FUNCTION_ARGUMENT(node.state));
+        isValid.push(isValid.length > 0 ?
+            (term("COMMA", node.state) && FUNCTION_ARGUMENT(node.state)) :
+            FUNCTION_ARGUMENT(node.state));
     } while (isValid[isValid.length - 1]);
     // Code above will end cycle only if mistake will be taken (last value of isValid should be false)
     // We should perform backtacking (next = next - 1) to reset 'next' counter.
-    next = next - 1
+    next = isValid.length > 1 ? next - 1 : next;
 
     isValid && parentNode.push(node);
-    return isValid
+    return true;
 }
 
 const FUNCTION_ARGUMENT = (parentNode) => {
@@ -303,9 +331,9 @@ const CLASS_PARAMETER_DECLARATION_WITH_INIT = (parentNode) => {
         ]
     }
 
-    const res = ACCESS_MODIFIERS(node.state) && TYPE(node.state) && term("ID", node.state) && 
-    term("OPERATOR_ASSIGN", node.state) && VALUE(node.state) && 
-    term("SEMI_COLON", node.state);
+    const res = ACCESS_MODIFIERS(node.state) && TYPE(node.state) && term("ID", node.state) &&
+        term("OPERATOR_ASSIGN", node.state) && VALUE(node.state) &&
+        term("SEMI_COLON", node.state);
 
     res && parentNode.push(node)
     return res
@@ -391,7 +419,7 @@ const RETURN_STATEMENT = (parentNode) => {
         ]
     }
 
-    const res = term("KEY_WORD_RETURN", node.state) &&  RETURN_STATEMENT_TYPE(node.state) &&
+    const res = term("KEY_WORD_RETURN", node.state) && RETURN_STATEMENT_TYPE(node.state) &&
         term("SEMI_COLON", node.state)
     res && parentNode.push(node)
     return res
