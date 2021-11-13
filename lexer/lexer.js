@@ -239,7 +239,7 @@ const lexer = (string) => {
 
     string = runner(int, 3, string, tokens, fa);
     string = runner(type_string, 6, string, tokens, fa);
-    
+
     string = runner(newLine, 1, string, tokens, fa);
     string = runner(commentDeclaration, 2, string, tokens, fa);
     string = runner(assignment, 1, string, tokens, fa);
@@ -261,10 +261,10 @@ const lexer = (string) => {
     string = runner(tab, 1, string, tokens, fa);
     string = runner(comma, 1, string, tokens, fa);
     string = runner(dot, 1, string, tokens, fa);
-  //  string = runner(quotes, 1, string, tokens, fa);
-  
+    //  string = runner(quotes, 1, string, tokens, fa);
+
     string = runner(number, 1, string, tokens, faId);
-    string = runner(string_value, 1 ,string , tokens, faId);
+    string = runner(string_value, 1, string, tokens, faId);
     string = runner(variableIdentifier, 1, string, tokens, faId);
     string = runner(space, 1, string, tokens, fa);
 
@@ -304,6 +304,25 @@ const filteredOutput = output.sortedTokens.filter((lexem) => {
         return lexem;
     }
 })
+
+// Adding program wrapper
+filteredOutput.unshift(...[
+    {
+        "TYPE": "KEY_WORD_PROGRAM",
+        "position": 0,
+        "lexem": "program"
+    },
+    {
+        "TYPE": "OPEN_BRACE",
+        "position": 1,
+        "lexem": "{"
+    }
+])
+filteredOutput.push({
+    "TYPE": "CLOSE_BRACE",
+    "position": 0,
+    "lexem": "}"
+});
 
 // Write file.
 try {

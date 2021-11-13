@@ -1,19 +1,18 @@
-class main {
-
-    class Mem {
-
-        public Mem function Mem(){
-            
-        }
-
-        var INT hehe = 123;
+class Main {
+    public Main function Main(){
+       var Mem MemObject = new Mem();
+       
+       var INT value = MemObject.hehe;
     }
+}
 
-    class Lol {
-        public Mem memObject = new Mem();
-
-
+class Mem {
+    public Mem function Mem(){
+        
     }
+    var INT hehe = 123;
+}
 
-
+class Lol {
+    public Mem memObject = new Mem();
 }

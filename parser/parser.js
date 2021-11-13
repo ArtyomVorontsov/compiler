@@ -51,12 +51,26 @@ const program = () => {
     }
 
 
-    if (saveNext(() => CLASS_DECLARATION(node.state))) {
+    if (saveNext(() => PROGRAM_DECLARATION(node.state))) {
         currentTerminals.push(node)
         return true
     }
 
     return false
+}
+
+const PROGRAM_DECLARATION = (parentNode) => {
+
+    const node = {
+        TYPE: "PROGRAM_DECLARATION",
+        state: [
+
+        ]
+    }
+
+    const res = term("KEY_WORD_PROGRAM", node.state) && term("OPEN_BRACE", node.state) && MULTI_EXPRESSION(node.state) && term("CLOSE_BRACE", node.state);
+    res && parentNode.push(...node.state)
+    return res;
 }
 
 const MULTI_EXPRESSION = (state) => {
@@ -212,7 +226,7 @@ const CLASS_DECLARATION = (parentNode) => {
 
 const CLASS_DECLARATION_TYPE_STATEMENT = (node) => {
     let save = next;
-
+    
     const saveNext = (callback) => {
         const result = callback();
         if (!result) next = save;

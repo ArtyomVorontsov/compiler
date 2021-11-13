@@ -135,7 +135,7 @@ class SymbolTable {
         return exists;
     }
 
-    get get_last_scope_id(){
+    get get_last_scope_id() {
         return this.get_scope_stack.reverse()[0].get_scope_id;
     }
 
@@ -209,8 +209,14 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             const position = node.state[2].position;
             const type = node.state[1].lexem;
 
-            // TODO: multiple types computation
-            const initial_value_type = node.state[4].TYPE;
+             // Hande class init
+            const initValue = node.state[4];
+            let initial_value_type = initValue.TYPE;
+            if (initValue) {
+                if (initial_value_type === "CLASS_INIT")
+                    initial_value_type = initValue.state[1].lexem;
+            }
+
             if (initial_value_type !== type) throw new CompilerError(`Type ${initial_value_type} can't be assigned to variable with type ${type}`).message
 
             symbol_table.update_last_scope({ identifier, type, is_declaration: true, position });
@@ -294,7 +300,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
         if (node.TYPE === "FUNCTION_STATEMENT") {
             const return_type = node.state[1].lexem;
             const is_constructor = symbol_table.get_last_scope_id === return_type;
-            if ((returned_value !== return_type) && !is_constructor )
+            if ((returned_value !== return_type) && !is_constructor)
                 throw new CompilerError(`Function return type is ${return_type} type ${returned_value} was returned.`).message
         }
 
