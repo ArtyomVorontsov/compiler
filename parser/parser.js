@@ -140,6 +140,12 @@ const VALUE = (parentNode) => {
     else if (saveNext(() => CLASS_INIT(parentNode))) {
         return true
     }
+    else if (saveNext(() => OBJECT_VALUES_ADRESSING(parentNode))) {
+        return true
+    }
+    else if (saveNext(() => term("ID", parentNode))) {
+        return true;
+    }
 
     return false
 }
@@ -226,7 +232,7 @@ const CLASS_DECLARATION = (parentNode) => {
 
 const CLASS_DECLARATION_TYPE_STATEMENT = (node) => {
     let save = next;
-    
+
     const saveNext = (callback) => {
         const result = callback();
         if (!result) next = save;
@@ -255,6 +261,20 @@ const CLASS_INIT = (parentNode) => {
         term("CLOSE_PARENTHESES", node.state);
     res && parentNode.push(node)
     return res
+}
+
+const OBJECT_VALUES_ADRESSING = (parentNode) => {
+    const node = {
+        TYPE: "OBJECT_VALUES_ADRESSING",
+        state: [
+
+        ]
+    }
+
+    const res = term("ID", node.state) && term("DOT", node.state) && term("ID", node.state);
+
+    res && parentNode.push(node);
+    return res;
 }
 
 const EXTENDS_STATEMENT = (parentNode) => {

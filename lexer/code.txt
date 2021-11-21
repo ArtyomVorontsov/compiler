@@ -1,18 +1,21 @@
-class Main {
-    public Main function Main(){
-       var Mem MemObject = new Mem();
-       
-       var INT value = MemObject.hehe;
-    }
+class lala {
+    public INT omg = 21;
 }
 
-class Mem {
+class Mem extends lala {
     public Mem function Mem(){
         
     }
-    var INT hehe = 123;
+
+    public lala abc = new lala();
 }
 
-class Lol {
-    public Mem memObject = new Mem();
+class Lol extends Mem {
+    public lala memObject = abc;
+}
+
+class FirstClass extends Lol {
+    public FirstClass function FirstClass(){
+       var lala double = memObject;
+    }
 }
