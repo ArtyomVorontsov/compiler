@@ -381,14 +381,26 @@ const ARIFMETIC_OPERATION_STATEMENT = (parentNode) => {
 
         ]
     }
+    
+    const saveNext = (callback, save) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    const STRING_OR_INT = (state) => {
+        let save = next;
+        return saveNext(() => saveNext(() => term("INT", state), save) || saveNext(() => term("STRING", state), save), save);
+    }
 
     const res =
-        (term("ID", node.state)) &&
+        STRING_OR_INT(node.state) &&
         ARIFMETIC_OPERATOR(node.state) &&
-        (term("ID", node.state));
+        STRING_OR_INT(node.state);
 
     res && parentNode.push(node)
-    return res
+    return res;
+
 }
 
 

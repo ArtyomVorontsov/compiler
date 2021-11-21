@@ -284,7 +284,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
         }
 
         if (node.TYPE === "VARIABLE_DECLARATION") {
-            const identifier = node.state[2].position;
+            const identifier = node.state[2].lexem;
             const position = node.state[2].position;
             const type = node.state[1].lexem;
 
@@ -294,8 +294,16 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
 
             if (init_value) {
 
+                // Handle ARIFMETIC_OPERATION_STATEMENT
+                if(initial_value_type === "ARIFMETIC_OPERATION_STATEMENT"){
+                    if(init_value.state[0].TYPE === init_value.state[2].TYPE){
+                        initial_value_type = init_value.state[0].TYPE;
+                    }else{
+                        throw new CompilerError(`Arifmetic operation ${init_value.state[1].lexem} can't be performed with types ${init_value.state[0].TYPE} and ${init_value.state[2].TYPE} types, on position ${position}`).message
+                    }
+                }
+
                 if (initial_value_type === "ID") {
-                    // TODO: handle assignement with variables.
                     initial_value_type = symbol_table.find(init_value.lexem).return_type[0];
                 }
 
@@ -378,6 +386,7 @@ const traverseAstAndComputeScopes = (AST, symbol_table, symbol_table_snapshot, i
             const lexem = node.state[1].lexem;
             if (return_type === "ID") {
                 const identifier = symbol_table.find(lexem);
+
                 if (!identifier) throw new CompilerError(`Variable ${lexem} is not declared.`).message
                 return return_value = identifier.TYPE[0];
             }

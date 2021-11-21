@@ -1,21 +1,6 @@
-class lala {
-    public INT omg = 21;
-}
-
-class Mem extends lala {
-    public Mem function Mem(){
-        
-    }
-
-    public lala abc = new lala();
-}
-
-class Lol extends Mem {
-    public lala memObject = abc;
-}
-
-class FirstClass extends Lol {
-    public FirstClass function FirstClass(){
-       var lala double = memObject;
+class FirstClass {
+    public INT function foo(){
+       var INT double = 10 - "a";
+       return double;
     }
 }
