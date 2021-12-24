@@ -118,6 +118,11 @@ const EXPRESSION = (node) => {
     else if (saveNext(() => CLASS_PARAMETER_DECLARATION_WITH_INIT(node))) {
         return true
     }
+    else if (saveNext(() => IF_STATEMENT(node))) {
+        return true
+    }
+
+    
 
     return false
 }
@@ -372,8 +377,8 @@ const FUNCTION_INVOCATION_ARGUMENTS = (parentNode) => {
     const isValid = []
     do {
         isValid.push(isValid.length > 0 ?
-            (term("COMMA", node.state) && FUNCTION_INVOCATION_ARGUMENT(node.state)) :
-            FUNCTION_INVOCATION_ARGUMENT(node.state));
+            (term("COMMA", node.state) && VALUE(node.state)) :
+            VALUE(node.state));
     } while (isValid[isValid.length - 1]);
     // Code above will end cycle only if mistake will be taken (last value of isValid should be false)
     // We should perform backtacking (next = next - 1) to reset 'next' counter.
@@ -397,7 +402,7 @@ const FUNCTION_INVOCATION_ARGUMENT = (node) => {
     }
     else if (saveNext(() => term("INT", node))) {
         return true
-    } 
+    }
     else if (saveNext(() => term("STRING", node))) {
         return true
     }
@@ -563,6 +568,20 @@ const EPSILON = (parentNode) => {
     const res = term("EPSILON", node.state)
     res && parentNode.push(node)
     return res
+}
+
+const IF_STATEMENT = (parentNode) => {
+    const node = {
+        TYPE: "IF_STATEMENT",
+        state: [
+
+        ]
+    }
+
+    const res = term("KEY_WORD_IF", node.state) && 
+    term("OPEN_PARENTHESES", node.state) && VALUE(node.state) &&  term("CLOSE_PARENTHESES", node.state) && BODY(node.state);
+    res && parentNode.push(node);
+    return res;
 }
 
 program()

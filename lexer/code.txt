@@ -1,5 +1,7 @@
 class Main {
     public INT function Main(){
-      print("Hello world");
+      if(1){
+        print("hello world");
+      }
     }
 }

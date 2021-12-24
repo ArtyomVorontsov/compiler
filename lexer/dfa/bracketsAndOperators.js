@@ -95,14 +95,14 @@ exports.bracketsAndOperators = {
         DFA: [
             { "<": 1 }
         ],
-        TYPE: "MATH_OP"
+        TYPE: "MATH_OP_LESS"
     },
 
     lessSign: {
         DFA: [
             { ">": 1 },
         ],
-        TYPE: "MATH_OP"
+        TYPE: "MATH_OP_MORE"
     },
 
     moreOrEqualSign: {

@@ -17,7 +17,7 @@ exports.keywords = {
             { "s": 3 },
             { "e": 4 }
         ],
-        TYPE: "KEY_WORD"
+        TYPE: "KEY_WORD_ELSE"
     },
 
     booleanFalseK: {
@@ -46,7 +46,7 @@ exports.keywords = {
             { "i": 1 },
             { "f": 2 },
         ],
-        TYPE: "KEY_WORD"
+        TYPE: "KEY_WORD_IF"
     },
 
     fiK: {
