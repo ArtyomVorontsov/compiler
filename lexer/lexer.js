@@ -62,7 +62,8 @@ const {
     functionK,
     privateK,
     protectedK,
-    publicK
+    publicK,
+    printK
 } = keywords;
 
 const {
@@ -236,6 +237,7 @@ const lexer = (string) => {
     string = runner(privateK, privateK.DFA.length, string, tokens, fa);
     string = runner(protectedK, protectedK.DFA.length, string, tokens, fa);
     string = runner(publicK, publicK.DFA.length, string, tokens, fa);
+    string = runner(printK, printK.DFA.length, string, tokens, fa);
 
     string = runner(int, 3, string, tokens, fa);
     string = runner(type_string, 6, string, tokens, fa);

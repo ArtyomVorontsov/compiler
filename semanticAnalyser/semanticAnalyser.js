@@ -1,13 +1,7 @@
 const util = require('util');
 const fs = require('fs');
 const colors = require('colors');
-
-
-class CompilerError {
-    constructor(message, color = "red") {
-        this.message = message[color];
-    }
-}
+const { CompilerError } = require('../commonClasses/CompilerError');
 
 /*
     IdentifierStructure: {

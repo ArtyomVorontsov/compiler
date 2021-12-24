@@ -277,5 +277,15 @@ exports.keywords = {
             { "c": 6 },
         ],
         TYPE: "KEY_WORD_PUBLIC"
+    },
+    printK: {
+        DFA: [
+            { "p": 1 },
+            { "r": 2 },
+            { "i": 3 },
+            { "n": 4 },
+            { "t": 5 },
+        ],
+        TYPE: "KEY_WORD_PRINT"
     }
 }

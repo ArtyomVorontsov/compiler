@@ -1,0 +1,20 @@
+{
+    "TYPE": "ARIFMETIC_OPERATION_STATEMENT",
+    "state": [
+        {
+            "TYPE": "INT",
+            "position": 59,
+            "lexem": "10"
+        },
+        {
+            "TYPE": "MATH_OP_PLUS",
+            "position": 61,
+            "lexem": "+"
+        },
+        {
+            "TYPE": "INT",
+            "position": 63,
+            "lexem": "5"
+        }
+    ]
+}
