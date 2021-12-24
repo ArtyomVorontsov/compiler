@@ -109,6 +109,9 @@ const EXPRESSION = (node) => {
     else if (saveNext(() => FUNCTION_STATEMENT(node))) {
         return true
     }
+    else if (saveNext(() => FUNCTION_INVOCATION(node))) {
+        return true
+    }
     else if (saveNext(() => CLASS_PARAMETER_DECLARATION(node))) {
         return true
     }
@@ -343,6 +346,65 @@ const FUNCTION_ARGUMENT = (parentNode) => {
     return res
 }
 
+const FUNCTION_INVOCATION = (parentNode) => {
+    const node = {
+        TYPE: "FUNCTION_INVOCATION",
+        state: [
+
+        ]
+    }
+
+    const res = term("KEY_WORD_PRINT", node.state) && term("OPEN_PARENTHESES", node.state) &&
+        FUNCTION_INVOCATION_ARGUMENTS(node.state) && term("CLOSE_PARENTHESES", node.state) && term("SEMI_COLON", node.state);
+
+    res && parentNode.push(node)
+    return res
+}
+
+const FUNCTION_INVOCATION_ARGUMENTS = (parentNode) => {
+    const node = {
+        TYPE: "FUNCTION_INVOCATION_ARGUMENTS",
+        state: [
+
+        ]
+    }
+
+    const isValid = []
+    do {
+        isValid.push(isValid.length > 0 ?
+            (term("COMMA", node.state) && FUNCTION_INVOCATION_ARGUMENT(node.state)) :
+            FUNCTION_INVOCATION_ARGUMENT(node.state));
+    } while (isValid[isValid.length - 1]);
+    // Code above will end cycle only if mistake will be taken (last value of isValid should be false)
+    // We should perform backtacking (next = next - 1) to reset 'next' counter.
+    next = isValid.length > 1 ? next - 1 : next;
+
+    isValid && parentNode.push(node);
+    return true;
+}
+
+const FUNCTION_INVOCATION_ARGUMENT = (node) => {
+    let save = next;
+
+    const saveNext = (callback) => {
+        const result = callback();
+        if (!result) next = save;
+        return result;
+    }
+
+    if (saveNext(() => term("ID", node))) {
+        return true
+    }
+    else if (saveNext(() => term("INT", node))) {
+        return true
+    } 
+    else if (saveNext(() => term("STRING", node))) {
+        return true
+    }
+
+    return false
+}
+
 const CLASS_PARAMETER_DECLARATION = (parentNode) => {
     const node = {
         TYPE: "CLASS_PARAMETER_DECLARATION",
@@ -381,7 +443,7 @@ const ARIFMETIC_OPERATION_STATEMENT = (parentNode) => {
 
         ]
     }
-    
+
     const saveNext = (callback, save) => {
         const result = callback();
         if (!result) next = save;

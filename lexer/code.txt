@@ -1,6 +1,5 @@
-class FirstClass {
-    public INT function foo(){
-       var INT double = 10 - "a";
-       return double;
+class Main {
+    public INT function Main(){
+      print("Hello world");
     }
 }
