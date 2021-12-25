@@ -1,7 +1,6 @@
 const util = require('util');
 const fs = require('fs');
 const colors = require('colors');
-const { __esModule } = require('@babel/traverse/lib/path');
 
 
 class CompilerError {

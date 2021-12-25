@@ -7,33 +7,17 @@
         .data
         
     # header_data
-VALUE72: .asciiz "\nhello world\n"
-VALUE126: .asciiz "\nbue world\n"
-ASK_AGE: .asciiz "Enter you age:"
-OLD_AGE: .word 17
+VALUE72: .ascii "hello world"VALUE126: .ascii "bue world"
 
-
-    .text
-
-    # ASK_AGE
-    la $a0, ASK_AGE
-
-    li $v0, 4
-    syscall
-
-    li $v0, 5 
-    syscall
-
-    move $t0, $v0
+        .text
     
     # IF_OPERATION_STATEMENT
     
-    move $a0, $t0
+    li $a0, 0
     
     
         # is_equal_zero 
-        lw $t1, OLD_AGE
-        bgt $a0, $t1, BRANCH94
+        beqz $a0, BRANCH56
     
 
     # branch body
@@ -45,23 +29,17 @@ OLD_AGE: .word 17
     # print_value
     li $v0, 4
     syscall
-
-     # file_footer
-    li $v0, 10
-    syscall
-    .end main
     
     
-        BRANCH94:
+        $BRANCH94:
     
     # IF_OPERATION_STATEMENT
     
-    move $a0, $t0
+    li $a0, 1
     
     
         # is_equal_zero 
-        lw $t1, OLD_AGE
-        blt $a0, $t1 , BRANCH146
+        beqz $a0, BRANCH108
     
 
     # branch body
@@ -75,13 +53,13 @@ OLD_AGE: .word 17
     syscall
     
     
-        BRANCH146:
+        $BRANCH146:
     
-        BRANCH152:
+        $BRANCH152:
     
-        BRANCH154:
+        $BRANCH154:
     
-        BRANCH0:
+        $BRANCH0:
     
     # file_footer
     li $v0, 10

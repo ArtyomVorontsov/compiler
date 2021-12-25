@@ -3,5 +3,9 @@ class Main {
       if(1){
         print("hello world");
       }
+
+      if(0){
+          print("bue world");
+      }
     }
 }

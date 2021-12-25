@@ -2,7 +2,7 @@ fs = require('fs');
 
 const readText = require("../utils/readText");
 
-const code = readText('./code.json');
+const code = readText('/Users/artjoms/Desktop/parser/parser/output.json');
 
 const print = (text) => {
     const filename = "assembly.s";
@@ -14,15 +14,29 @@ const print = (text) => {
 
 // Mips code templates
 
-const file_header = () => {
+let header_data = `
+    # header_data
+`;
+const add_header_data = (data) => {
+    header_data = header_data + data;
+}
+
+const file_header = (header_data) => {
     return `
     .text
     .globl main
     .ent main
 
     main: 
+        .data
+        ${header_data}
+
         .text
     `;
+}
+
+const add_asciiz_text = (name, text) => {
+    add_header_data(`${name}: .asciiz ${text}\n`)
 }
 
 const file_footer = () => {
@@ -70,14 +84,13 @@ const sub_values = () => {
 const print_value = () => {
     return `
     # print_value
-    li $v0, 1
+    li $v0, 4
     syscall
     `
 }
 
 const ARIFMETIC_OPERATION_STATEMENT = (code) => {
 
-    const operation = "MATH_OP_PLUS" === code.state[1].TYPE ? "add" : "sub";
     const v0 = code.state[0].lexem
     const v1 = code.state[2].lexem
     return `
@@ -89,6 +102,46 @@ const ARIFMETIC_OPERATION_STATEMENT = (code) => {
     ${stack_pop()}
     `;
 }
+
+const IF_OPERATION_STATEMENT = (ast, branch_end_position) => {
+
+    const a0 = ast.state[2].lexem
+    const branch_id = "BRANCH" + branch_end_position
+    return `
+    # IF_OPERATION_STATEMENT
+    ${load_in_register(a0)}
+    ${is_equal_zero(branch_id)}
+
+    # branch body
+    `;
+}
+
+const KEY_WORD_PRINT = (ast) => {
+
+    const value = ast.state[2].state[0].lexem;
+    add_asciiz_text("VALUE" + ast.state[2].state[0].position, value);
+    return `
+        # KEY_WORD_PRINT
+        
+        la $a0, VALUE${ast.state[2].state[0].position}
+        ${print_value()}
+    `
+}
+
+const CREATE_BRANCH = (ast) => {
+    
+    return `
+        BRANCH${ast.position}:
+    `
+}
+
+const is_equal_zero = ( branch_id) => {
+    return `
+        # is_equal_zero 
+        beqz $a0, ${branch_id}
+    `
+}
+
 
 let glued_code = "";
 const glue = (code) => {
@@ -104,4 +157,37 @@ const codeGeneration = (code) => {
     print(glued_code)
 }
 
-codeGeneration(code);
+const ast_traverse = (ast) => {
+    if(ast.state){
+        
+        ast.state.forEach(node => {
+            console.log(node.TYPE)
+
+            if(node.TYPE === "IF_STATEMENT"){
+                glue(IF_OPERATION_STATEMENT(node, node.state[node.state.length - 1].state[
+                    node.state[node.state.length - 1].state.length-1
+                ].position));
+            }
+            else if(node.TYPE === "KEY_WORD_PRINT"){
+                glue(KEY_WORD_PRINT(ast))
+            }
+            else if(node.TYPE === "CLOSE_BRACE"){
+                glue(CREATE_BRANCH(node))
+            }
+            
+            ast_traverse(node)
+            
+        })
+    }else{
+        ast
+    }
+}
+
+const add_file_header = () => {
+    glued_code = file_header(header_data) + glued_code; 
+}
+
+ast_traverse(code[0])
+add_file_header(header_data)
+glue(file_footer());
+print(glued_code)
